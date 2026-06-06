@@ -3,6 +3,7 @@
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 /
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Link: </assets/hero-grill-ds_jpqph.webp>; rel=preload; as=image; type=image/webp
 
 # Global security + performance headers
 /*
