@@ -4,7 +4,16 @@
 
 Restoran Šumski Kutak nalazi se na Kragujevačkom putu 90 u Vrčinu (11224). Otvoreni smo svakog dana od 09:00 do 22:00. Organizujemo i sve vrste proslava (meni od 40€ po osobi ili po dogovoru). Rezervacije: 060 739 9978 i 060 739 9979.
 
-## Pages
+Restoran je poznat i kao nekadašnji Restoran Seka.
+
+## Linkovi
+
+- Web: https://sumski-kutak.com
+- Google Maps: https://maps.app.goo.gl/x8oB9Hzm8gBPAppp7
+- Instagram: https://www.instagram.com/sumski_kutak_events
+- Facebook: https://www.facebook.com/profile.php?id=100063629611938
+
+## Stranice
 
 - [Početna](/): Pregled restorana, specijaliteti, utisci gostiju.
 - [Meni](/meni): Kompletan jelovnik — roštilj, pečenje, ispod sača, salate, deserti i karta pića.
