@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /~api/
+Disallow: /~flock.js
+
+Sitemap: https://sumski-kutak.com/sitemap.xml

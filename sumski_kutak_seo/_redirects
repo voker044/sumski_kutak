@@ -1,0 +1,8 @@
+# Force trailing slash on all subpages (prevents Netlify's 301 creating canonical loops)
+/meni       /meni/      301!
+/galerija   /galerija/  301!
+/o-nama     /o-nama/    301!
+/kontakt    /kontakt/   301!
+
+# SPA fallback for dynamic routing
+/*          /index.html  200

@@ -1,0 +1,13 @@
+# Šumski Kutak
+
+> Tradicionalni restoran u Vrčinu (Beograd) — roštilj na otvorenom ognjištu, pečenje na ražnju i jela ispod sača.
+
+Restoran Šumski Kutak nalazi se na Kragujevačkom putu 90 u Vrčinu. Otvoreni smo svakog dana od 09:00 do 22:00. Organizujemo i sve vrste proslava (meni od 40€ po osobi ili po dogovoru).
+
+## Pages
+
+- [Početna](/): Pregled restorana, specijaliteti, utisci gostiju.
+- [Meni](/meni): Kompletan jelovnik — roštilj, pečenje, ispod sača, salate, deserti i karta pića.
+- [O nama](/o-nama): Priča o restoranu i pristupu kuhinji.
+- [Galerija](/galerija): Slike specijaliteta, ambijenta i proslava.
+- [Kontakt](/kontakt): Adresa, telefoni, radno vreme i mapa.
