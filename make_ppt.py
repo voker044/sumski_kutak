@@ -68,7 +68,7 @@ def bullets(slide, left, top, width, height, stavke, size=18, boja=TAMNA,
         p.level = nivo
         p.space_after = Pt(razmak)
         p.space_before = Pt(0)
-        oznaka = "•  " if nivo == 0 else "–  "
+        oznaka = "•  " if nivo == 0 else "-  "
         r1 = p.add_run()
         r1.text = oznaka
         r1.font.size = Pt(size)
@@ -120,7 +120,7 @@ def naslov_slajda(slide, broj, naslov):
 
 
 # ============================================================
-# SLAJD 1 — Naslovna
+# SLAJD 1 - Naslovna
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, TAMNA)
@@ -134,13 +134,13 @@ dodaj_traku(s, Inches(2.2), Emu(50000), ZLATNA, left=Inches(0.7), width=Inches(7
 txt(s, Inches(0.7), Inches(2.45), Inches(7.7), Inches(2.0),
     "VELIMIR\n„BATA“ ŽIVOJINOVIĆ", 40, BELA, bold=True, anchor=MSO_ANCHOR.MIDDLE)
 txt(s, Inches(0.7), Inches(4.7), Inches(7.7), Inches(1.3),
-    "Život i uloge — s posebnim osvrtom na ulogu Gvozdena u filmu „Lepa sela lepo gore“ (1996)",
+    "Život i uloge - s posebnim osvrtom na ulogu Gvozdena u filmu „Lepa sela lepo gore“ (1996)",
     19, SVETLA, italic=True)
 txt(s, Inches(0.7), Inches(6.4), Inches(7.7), Inches(0.6),
-    "1933 — 2016  •  legenda jugoslovenskog i srpskog filma", 14, ZLATNA)
+    "1933 - 2016  •  legenda jugoslovenskog i srpskog filma", 14, ZLATNA)
 
 # ============================================================
-# SLAJD 2 — Sadržaj
+# SLAJD 2 - Sadržaj
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -151,15 +151,15 @@ bullets(s, Inches(1.2), Inches(1.7), Inches(11), Inches(5.4), [
     ("Filmska karijera i najpoznatije uloge", 0),
     ("Televizijske uloge", 0),
     ("Politički angažman", 0),
-    ("Film „Lepa sela lepo gore“ — o čemu se radi", 0),
-    ("Uloga Gvozdena — analiza lika", 0),
+    ("Film „Lepa sela lepo gore“ - o čemu se radi", 0),
+    ("Uloga Gvozdena - analiza lika", 0),
     ("Značaj uloge i poruka filma", 0),
     ("Nagrade, priznanja i nasleđe", 0),
     ("Zaključak", 0),
 ], size=20, razmak=11)
 
 # ============================================================
-# SLAJD 3 — Ko je bio
+# SLAJD 3 - Ko je bio
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -183,7 +183,7 @@ bullets(s, Inches(8.55), Inches(2.5), Inches(4.0), Inches(1.8), [
 slika_cover(s, "bata2.jpg", Inches(8.3), Inches(4.45), Inches(4.5), Inches(2.5))
 
 # ============================================================
-# SLAJD 4 — Detinjstvo i školovanje
+# SLAJD 4 - Detinjstvo i školovanje
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -199,7 +199,7 @@ slika_cover(s, "kosmaj.jpg", Inches(8.4), Inches(1.7), Inches(4.4), Inches(4.6))
 potpis(s, Inches(8.4), Inches(6.35), Inches(4.4), "Planina Kosmaj, kraj odakle potiče")
 
 # ============================================================
-# SLAJD 5 — Filmska karijera
+# SLAJD 5 - Filmska karijera
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -209,14 +209,14 @@ bullets(s, Inches(0.7), Inches(1.65), Inches(7.5), Inches(5.5), [
     ("„Bitka na Neretvi“ (1969)", 1),
     ("„Most“ (1969)", 1),
     ("„Valter brani Sarajevo“ (1972)", 1),
-    ("„Sutjeska“ (1973) — uz Ričarda Bartona", 1),
-    ("Igrao je i u komedijama, dramama i istorijskim filmovima — veliki glumački raspon.", 0),
+    ("„Sutjeska“ (1973) - uz Ričarda Bartona", 1),
+    ("Igrao je i u komedijama, dramama i istorijskim filmovima - veliki glumački raspon.", 0),
     ("Njegova pojava postala je zaštitni znak čitave epohe domaćeg filma.", 0),
 ], size=17, razmak=8)
 slika_cover(s, "bata3.jpg", Inches(8.4), Inches(1.9), Inches(4.4), Inches(4.4))
 
 # ============================================================
-# SLAJD 6 — Televizijske uloge
+# SLAJD 6 - Televizijske uloge
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -224,14 +224,14 @@ naslov_slajda(s, 6, "Televizijske uloge")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.4), Inches(5.4), [
     ("Pored filma, bio je veoma popularan i na malim ekranima.", 0),
     ("Glumio je u kultnim TV serijama koje su pratile generacije gledalaca:", 0),
-    ("„Otpisani“ i „Povratak otpisanih“ — priče o beogradskim ilegalcima u Drugom svetskom ratu.", 1),
+    ("„Otpisani“ i „Povratak otpisanih“ - priče o beogradskim ilegalcima u Drugom svetskom ratu.", 1),
     ("Učestvovao je u brojnim TV dramama i serijama tokom decenija.", 0),
     ("Zahvaljujući televiziji, postao je omiljen u svakom domu bivše Jugoslavije.", 0),
 ], size=18, razmak=12)
 slika_cover(s, "bata1.jpg", Inches(8.4), Inches(1.7), Inches(4.4), Inches(4.9))
 
 # ============================================================
-# SLAJD 7 — Politika
+# SLAJD 7 - Politika
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -240,53 +240,53 @@ bullets(s, Inches(0.7), Inches(1.7), Inches(7.4), Inches(5.4), [
     ("U drugom delu života aktivno se bavio politikom.", 0),
     ("Bio je član Socijalističke partije Srbije (SPS).", 0),
     ("Više puta je biran za narodnog poslanika u Skupštini.", 0),
-    ("Ulazak u politiku propraćen je velikom pažnjom javnosti — zbog ogromne popularnosti koju je stekao kao glumac.", 0),
+    ("Ulazak u politiku propraćen je velikom pažnjom javnosti - zbog ogromne popularnosti koju je stekao kao glumac.", 0),
     ("Publika ga je pre svega pamtila kao velikog umetnika.", 0),
 ], size=18, razmak=12)
 slika_cover(s, "skupstina.jpg", Inches(8.4), Inches(2.1), Inches(4.4), Inches(3.0))
 potpis(s, Inches(8.4), Inches(5.15), Inches(4.4), "U Skupštini Srbije (1990-e)")
 
 # ============================================================
-# SLAJD 8 — O filmu Lepa sela lepo gore
+# SLAJD 8 - O filmu Lepa sela lepo gore
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 8, "Film „Lepa sela lepo gore“ (1996)")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.5), Inches(5.4), [
     ("Reditelj: Srđan Dragojević.", 0),
-    ("Jedan od najznačajnijih i najpotresnijih srpskih filmova o ratu u Bosni (1992–1995).", 0),
+    ("Jedan od najznačajnijih i najpotresnijih srpskih filmova o ratu u Bosni (1992-1995).", 0),
     ("Radnja prati grupu srpskih boraca zarobljenih u tunelu, okruženih neprijateljskim snagama.", 0),
     ("Kroz potresne scene prikazuje besmisao rata i raspad nekadašnjeg „bratstva i jedinstva“.", 0),
-    ("Antiratni film — ne slavi rat, već pokazuje njegovu tragediju i ljudsku patnju.", 0),
+    ("Antiratni film - ne slavi rat, već pokazuje njegovu tragediju i ljudsku patnju.", 0),
 ], size=18, razmak=11)
 dodaj_traku(s, Inches(1.7), Inches(5.1), TAMNO_CRVENA, left=Inches(8.45), width=Inches(4.35))
 txt(s, Inches(8.7), Inches(1.95), Inches(3.85), Inches(0.6),
     "ZANIMLJIVO", 17, ZLATNA, bold=True)
 bullets(s, Inches(8.7), Inches(2.7), Inches(3.9), Inches(4.0), [
-    ("Tunel je simbol — bezizlazna situacija i zarobljenost u mržnji rata.", 0),
+    ("Tunel je simbol - bezizlazna situacija i zarobljenost u mržnji rata.", 0),
     ("Film je dobio brojne nagrade i prikazivan je širom sveta.", 0),
     ("Naziv potiče iz crnog humora kojim se borci brane od strave rata.", 0),
 ], size=14, boja=BELA, razmak=12, bullet_boja=ZLATNA)
 
 # ============================================================
-# SLAJD 9 — Uloga Gvozdena
+# SLAJD 9 - Uloga Gvozdena
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
-naslov_slajda(s, 9, "Uloga Gvozdena — analiza lika")
+naslov_slajda(s, 9, "Uloga Gvozdena - analiza lika")
 bullets(s, Inches(0.7), Inches(1.65), Inches(7.5), Inches(5.5), [
-    ("Bata Živojinović tumači Gvozdena — starijeg, iskusnog borca među zarobljenim vojnicima.", 0),
+    ("Bata Živojinović tumači Gvozdena - starijeg, iskusnog borca među zarobljenim vojnicima.", 0),
     ("Gvozden je nekadašnji radnik koji je iskreno verovao u ideale „bratstva i jedinstva“ socijalističke Jugoslavije.", 0),
-    ("Predstavlja stariju generaciju — onu koja je gradila zajedničku zemlju i ne može da prihvati da se ona ruši u krvi.", 0),
+    ("Predstavlja stariju generaciju - onu koja je gradila zajedničku zemlju i ne može da prihvati da se ona ruši u krvi.", 0),
     ("Kako rat odmiče, sve više gubi nadu i razočaran je u sve oko sebe.", 0),
-    ("Tragičan lik — simbol sloma jednog sistema vrednosti i jedne epohe.", 0),
-    ("U trenutku potpunog očaja donosi sudbonosnu, samoubilačku odluku — jedna od najupečatljivijih scena filma.", 0),
+    ("Tragičan lik - simbol sloma jednog sistema vrednosti i jedne epohe.", 0),
+    ("U trenutku potpunog očaja donosi sudbonosnu, samoubilačku odluku - jedna od najupečatljivijih scena filma.", 0),
 ], size=17, razmak=9)
 slika_cover(s, "bata3.jpg", Inches(8.4), Inches(1.9), Inches(4.4), Inches(4.4))
-potpis(s, Inches(8.4), Inches(6.35), Inches(4.4), "Bata Živojinović — legenda domaćeg glumišta")
+potpis(s, Inches(8.4), Inches(6.35), Inches(4.4), "Bata Živojinović - legenda domaćeg glumišta")
 
 # ============================================================
-# SLAJD 10 — Značaj uloge
+# SLAJD 10 - Značaj uloge
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -300,7 +300,7 @@ bullets(s, Inches(1.0), Inches(1.7), Inches(11.3), Inches(5.4), [
 ], size=19, razmak=13)
 
 # ============================================================
-# SLAJD 11 — Nagrade i nasleđe
+# SLAJD 11 - Nagrade i nasleđe
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
@@ -313,12 +313,12 @@ bullets(s, Inches(0.7), Inches(1.7), Inches(7.3), Inches(5.4), [
     ("Njemu u čast izdata je i poštanska marka; filmovi mu se i danas rado gledaju.", 0),
 ], size=18, razmak=11)
 slika_cover(s, "pula.jpg", Inches(8.4), Inches(1.75), Inches(4.4), Inches(2.55))
-potpis(s, Inches(8.4), Inches(4.32), Inches(4.4), "Arena u Puli — dom filmskog festivala")
+potpis(s, Inches(8.4), Inches(4.32), Inches(4.4), "Arena u Puli - dom filmskog festivala")
 slika_cover(s, "marka.jpg", Inches(8.4), Inches(4.75), Inches(4.4), Inches(2.1))
 potpis(s, Inches(8.4), Inches(6.88), Inches(4.4), "Poštanska marka Srbije (2023)")
 
 # ============================================================
-# SLAJD 12 — Zaključak
+# SLAJD 12 - Zaključak
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, TAMNA)
@@ -334,28 +334,16 @@ bullets(s, Inches(1.6), Inches(2.2), Inches(10.1), Inches(4.0), [
 ], size=20, boja=SVETLA, razmak=16, bullet_boja=ZLATNA)
 
 # ============================================================
-# SLAJD 13 — Hvala / Izvori
+# SLAJD 13 - Hvala / Izvori
 # ============================================================
 s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, TAMNO_CRVENA)
-dodaj_traku(s, Inches(2.7), Emu(50000), ZLATNA, left=Inches(2.5), width=Inches(8.3))
-txt(s, Inches(1), Inches(1.9), Inches(11.3), Inches(1.2),
+dodaj_traku(s, Inches(3.55), Emu(50000), ZLATNA, left=Inches(2.5), width=Inches(8.3))
+txt(s, Inches(1), Inches(2.7), Inches(11.3), Inches(1.2),
     "HVALA NA PAŽNJI!", 44, BELA, bold=True, align=PP_ALIGN.CENTER,
     anchor=MSO_ANCHOR.MIDDLE)
-txt(s, Inches(1), Inches(3.1), Inches(11.3), Inches(0.7),
+txt(s, Inches(1), Inches(3.95), Inches(11.3), Inches(0.7),
     "Pitanja i diskusija dobrodošli", 20, ZLATNA, align=PP_ALIGN.CENTER, italic=True)
-txt(s, Inches(1), Inches(4.4), Inches(11.3), Inches(0.5),
-    "Izvori teksta:", 15, ZLATNA, align=PP_ALIGN.CENTER, bold=True)
-txt(s, Inches(1.5), Inches(4.8), Inches(10.3), Inches(0.5),
-    "Wikipedia i dostupni filmski i biografski materijali", 13, SVETLA,
-    align=PP_ALIGN.CENTER)
-txt(s, Inches(1), Inches(5.5), Inches(11.3), Inches(0.5),
-    "Fotografije:", 15, ZLATNA, align=PP_ALIGN.CENTER, bold=True)
-txt(s, Inches(1.2), Inches(5.9), Inches(10.9), Inches(1.0),
-    "Wikimedia Commons — portreti i fotografija iz Skupštine: Medija centar Beograd / "
-    "Stevan Kragujević (CC BY-SA 3.0); Kosmaj i Arena u Puli (CC BY-SA); "
-    "poštanska marka: Pošta Srbije (javno vlasništvo).",
-    11, SVETLA, align=PP_ALIGN.CENTER)
 
 prs.save("/home/user/sumski_kutak/Bata_Zivojinovic_prezentacija.pptx")
 print("Sačuvano. Broj slajdova:", len(prs.slides._sldIdLst))
