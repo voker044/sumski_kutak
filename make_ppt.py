@@ -75,11 +75,16 @@ def bullets(slide, left, top, width, height, stavke, size=18, boja=TAMNA,
         r1.font.bold = True
         r1.font.color.rgb = bullet_boja if nivo == 0 else ZLATNA
         r1.font.name = font
-        r2 = p.add_run()
-        r2.text = tekst
-        r2.font.size = Pt(size) if nivo == 0 else Pt(size - 2)
-        r2.font.color.rgb = boja
-        r2.font.name = font
+        # tekst sa podrskom za inline bold preko **...**
+        for j, deo in enumerate(tekst.split("**")):
+            if deo == "":
+                continue
+            r2 = p.add_run()
+            r2.text = deo
+            r2.font.size = Pt(size) if nivo == 0 else Pt(size - 2)
+            r2.font.bold = (j % 2 == 1)
+            r2.font.color.rgb = boja
+            r2.font.name = font
     return tb
 
 
@@ -129,7 +134,7 @@ dodaj_traku(s, SH - Inches(0.35), Inches(0.35), CRVENA)
 # portret desno
 slika_cover(s, "bata1.jpg", Inches(8.7), Inches(1.15), Inches(3.9), Inches(5.2))
 txt(s, Inches(0.7), Inches(0.95), Inches(7.7), Inches(0.6),
-    "MATURSKA / SEMINARSKA PREZENTACIJA", 15, ZLATNA, bold=True)
+    "Anđela Stefanov", 17, ZLATNA, bold=True)
 dodaj_traku(s, Inches(2.2), Emu(50000), ZLATNA, left=Inches(0.7), width=Inches(7.5))
 txt(s, Inches(0.7), Inches(2.45), Inches(7.7), Inches(2.0),
     "VELIMIR\n„BATA“ ŽIVOJINOVIĆ", 40, BELA, bold=True, anchor=MSO_ANCHOR.MIDDLE)
@@ -165,10 +170,10 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 3, "Ko je bio Bata Živojinović?")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.3), Inches(5.4), [
-    ("Jedan od najpoznatijih i najplodnijih glumaca u istoriji jugoslovenskog i srpskog filma.", 0),
-    ("Tokom karijere igrao je u više od 300 filmova i televizijskih ostvarenja.", 0),
-    ("Postao je prepoznatljiv kao simbol „partizanskih“ ratnih filmova i otelotvorenje narodnog junaka.", 0),
-    ("Voljen kod publike zbog topline, autentičnosti i snažne ekranske pojave.", 0),
+    ("Jedan od **najpoznatijih i najplodnijih glumaca** u istoriji jugoslovenskog i srpskog filma.", 0),
+    ("Tokom karijere igrao je u **više od 300 filmova** i televizijskih ostvarenja.", 0),
+    ("Postao je prepoznatljiv kao simbol **„partizanskih“ ratnih filmova** i otelotvorenje narodnog junaka.", 0),
+    ("Voljen kod publike zbog **topline, autentičnosti i snažne ekranske pojave**.", 0),
     ("U drugom delu života bavio se i politikom.", 0),
 ], size=18, razmak=11)
 dodaj_traku(s, Inches(1.7), Inches(2.55), TAMNO_CRVENA, left=Inches(8.3), width=Inches(4.5))
@@ -189,11 +194,11 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 4, "Detinjstvo, mladost i školovanje")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.4), Inches(5.4), [
-    ("Rođen je 5. juna 1933. u selu Koraćica, u podnožju planine Kosmaj, blizu Mladenovca.", 0),
-    ("Detinjstvo je proveo u skromnim, seoskim uslovima, što je kasnije uticalo na njegove „narodne“ uloge.", 0),
+    ("Rođen je **5. juna 1933.** u selu **Koraćica**, u podnožju planine **Kosmaj**, blizu Mladenovca.", 0),
+    ("Detinjstvo je proveo u skromnim, **seoskim uslovima**, što je kasnije uticalo na njegove „narodne“ uloge.", 0),
     ("Ljubav prema glumi otkrio je još u mladosti.", 0),
-    ("Diplomirao je na Akademiji za pozorišnu umetnost u Beogradu.", 0),
-    ("Karijeru je započeo u pozorištu, a ubrzo prešao na film, gde je stekao najveću slavu.", 0),
+    ("Diplomirao je na **Akademiji za pozorišnu umetnost u Beogradu**.", 0),
+    ("Karijeru je započeo u **pozorištu**, a ubrzo prešao na **film**, gde je stekao najveću slavu.", 0),
 ], size=18, razmak=12)
 slika_cover(s, "kosmaj.jpg", Inches(8.4), Inches(1.7), Inches(4.4), Inches(4.6))
 potpis(s, Inches(8.4), Inches(6.35), Inches(4.4), "Planina Kosmaj, kraj odakle potiče")
@@ -205,13 +210,13 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 5, "Filmska karijera i najpoznatije uloge")
 bullets(s, Inches(0.7), Inches(1.65), Inches(7.5), Inches(5.5), [
-    ("Najveću popularnost stekao je u partizanskim ratnim filmovima, tumačeći hrabre borce i komandante:", 0),
-    ("„Bitka na Neretvi“ (1969)", 1),
-    ("„Most“ (1969)", 1),
-    ("„Valter brani Sarajevo“ (1972)", 1),
-    ("„Sutjeska“ (1973) - uz Ričarda Bartona", 1),
-    ("Igrao je i u komedijama, dramama i istorijskim filmovima - veliki glumački raspon.", 0),
-    ("Njegova pojava postala je zaštitni znak čitave epohe domaćeg filma.", 0),
+    ("Najveću popularnost stekao je u **partizanskim ratnim filmovima**, tumačeći hrabre borce i komandante:", 0),
+    ("**„Bitka na Neretvi“** (1969)", 1),
+    ("**„Most“** (1969)", 1),
+    ("**„Valter brani Sarajevo“** (1972)", 1),
+    ("**„Sutjeska“** (1973) - uz **Ričarda Bartona**", 1),
+    ("Igrao je i u komedijama, dramama i istorijskim filmovima - **veliki glumački raspon**.", 0),
+    ("Njegova pojava postala je **zaštitni znak čitave epohe** domaćeg filma.", 0),
 ], size=17, razmak=8)
 slika_cover(s, "bata3.jpg", Inches(8.4), Inches(1.9), Inches(4.4), Inches(4.4))
 
@@ -223,10 +228,10 @@ dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 6, "Televizijske uloge")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.4), Inches(5.4), [
     ("Pored filma, bio je veoma popularan i na malim ekranima.", 0),
-    ("Glumio je u kultnim TV serijama koje su pratile generacije gledalaca:", 0),
-    ("„Otpisani“ i „Povratak otpisanih“ - priče o beogradskim ilegalcima u Drugom svetskom ratu.", 1),
+    ("Glumio je u **kultnim TV serijama** koje su pratile generacije gledalaca:", 0),
+    ("**„Otpisani“** i **„Povratak otpisanih“** - priče o beogradskim ilegalcima u Drugom svetskom ratu.", 1),
     ("Učestvovao je u brojnim TV dramama i serijama tokom decenija.", 0),
-    ("Zahvaljujući televiziji, postao je omiljen u svakom domu bivše Jugoslavije.", 0),
+    ("Zahvaljujući televiziji, postao je **omiljen u svakom domu** bivše Jugoslavije.", 0),
 ], size=18, razmak=12)
 slika_cover(s, "bata1.jpg", Inches(8.4), Inches(1.7), Inches(4.4), Inches(4.9))
 
@@ -237,9 +242,9 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 7, "Politički angažman")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.4), Inches(5.4), [
-    ("U drugom delu života aktivno se bavio politikom.", 0),
-    ("Bio je član Socijalističke partije Srbije (SPS).", 0),
-    ("Više puta je biran za narodnog poslanika u Skupštini.", 0),
+    ("U drugom delu života aktivno se bavio **politikom**.", 0),
+    ("Bio je član **Socijalističke partije Srbije (SPS)**.", 0),
+    ("Više puta je biran za **narodnog poslanika** u Skupštini.", 0),
     ("Ulazak u politiku propraćen je velikom pažnjom javnosti - zbog ogromne popularnosti koju je stekao kao glumac.", 0),
     ("Publika ga je pre svega pamtila kao velikog umetnika.", 0),
 ], size=18, razmak=12)
@@ -253,19 +258,19 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 8, "Film „Lepa sela lepo gore“ (1996)")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.5), Inches(5.4), [
-    ("Reditelj: Srđan Dragojević.", 0),
-    ("Jedan od najznačajnijih i najpotresnijih srpskih filmova o ratu u Bosni (1992-1995).", 0),
-    ("Radnja prati grupu srpskih boraca zarobljenih u tunelu, okruženih neprijateljskim snagama.", 0),
-    ("Kroz potresne scene prikazuje besmisao rata i raspad nekadašnjeg „bratstva i jedinstva“.", 0),
-    ("Antiratni film - ne slavi rat, već pokazuje njegovu tragediju i ljudsku patnju.", 0),
+    ("Reditelj: **Srđan Dragojević**.", 0),
+    ("Jedan od **najznačajnijih i najpotresnijih** srpskih filmova o ratu u Bosni (1992-1995).", 0),
+    ("Radnja prati grupu srpskih boraca **zarobljenih u tunelu**, okruženih neprijateljskim snagama.", 0),
+    ("Kroz potresne scene prikazuje **besmisao rata** i raspad nekadašnjeg „bratstva i jedinstva“.", 0),
+    ("**Antiratni film** - ne slavi rat, već pokazuje njegovu tragediju i ljudsku patnju.", 0),
 ], size=18, razmak=11)
 dodaj_traku(s, Inches(1.7), Inches(5.1), TAMNO_CRVENA, left=Inches(8.45), width=Inches(4.35))
 txt(s, Inches(8.7), Inches(1.95), Inches(3.85), Inches(0.6),
     "ZANIMLJIVO", 17, ZLATNA, bold=True)
 bullets(s, Inches(8.7), Inches(2.7), Inches(3.9), Inches(4.0), [
-    ("Tunel je simbol - bezizlazna situacija i zarobljenost u mržnji rata.", 0),
-    ("Film je dobio brojne nagrade i prikazivan je širom sveta.", 0),
-    ("Naziv potiče iz crnog humora kojim se borci brane od strave rata.", 0),
+    ("Tunel je **simbol** - bezizlazna situacija i zarobljenost u mržnji rata.", 0),
+    ("Film je dobio **brojne nagrade** i prikazivan je širom sveta.", 0),
+    ("Naziv potiče iz **crnog humora** kojim se borci brane od strave rata.", 0),
 ], size=14, boja=BELA, razmak=12, bullet_boja=ZLATNA)
 
 # ============================================================
@@ -275,12 +280,12 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 9, "Uloga Gvozdena - analiza lika")
 bullets(s, Inches(0.7), Inches(1.65), Inches(7.5), Inches(5.5), [
-    ("Bata Živojinović tumači Gvozdena - starijeg, iskusnog borca među zarobljenim vojnicima.", 0),
-    ("Gvozden je nekadašnji radnik koji je iskreno verovao u ideale „bratstva i jedinstva“ socijalističke Jugoslavije.", 0),
-    ("Predstavlja stariju generaciju - onu koja je gradila zajedničku zemlju i ne može da prihvati da se ona ruši u krvi.", 0),
-    ("Kako rat odmiče, sve više gubi nadu i razočaran je u sve oko sebe.", 0),
-    ("Tragičan lik - simbol sloma jednog sistema vrednosti i jedne epohe.", 0),
-    ("U trenutku potpunog očaja donosi sudbonosnu, samoubilačku odluku - jedna od najupečatljivijih scena filma.", 0),
+    ("Bata Živojinović tumači **Gvozdena** - starijeg, iskusnog borca među zarobljenim vojnicima.", 0),
+    ("Gvozden je nekadašnji radnik koji je iskreno verovao u ideale **„bratstva i jedinstva“** socijalističke Jugoslavije.", 0),
+    ("Predstavlja **stariju generaciju** - onu koja je gradila zajedničku zemlju i ne može da prihvati da se ona ruši u krvi.", 0),
+    ("Kako rat odmiče, sve više **gubi nadu** i razočaran je u sve oko sebe.", 0),
+    ("**Tragičan lik** - simbol sloma jednog sistema vrednosti i jedne epohe.", 0),
+    ("U trenutku potpunog očaja donosi **sudbonosnu, samoubilačku odluku** - jedna od najupečatljivijih scena filma.", 0),
 ], size=17, razmak=9)
 slika_cover(s, "bata3.jpg", Inches(8.4), Inches(1.9), Inches(4.4), Inches(4.4))
 potpis(s, Inches(8.4), Inches(6.35), Inches(4.4), "Bata Živojinović - legenda domaćeg glumišta")
@@ -292,10 +297,10 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 10, "Značaj uloge i poruka filma")
 bullets(s, Inches(1.0), Inches(1.7), Inches(11.3), Inches(5.4), [
-    ("Uloga Gvozdena je posebno značajna jer Batu Živojinovića vidimo u potpuno novom svetlu.", 0),
-    ("Glumac koji je decenijama bio simbol partizanskih, pobedničkih junaka, sada igra slomljenog, razočaranog čoveka.", 0),
-    ("Stvara se snažan kontrast: nekadašnji „heroj bratstva i jedinstva“ suočava se sa raspadom svega u šta je verovao.", 0),
-    ("Poruka filma kroz Gvozdena: rat uništava ne samo živote, već i ideale i ljudskost.", 0),
+    ("Uloga Gvozdena je posebno značajna jer Batu Živojinovića vidimo u **potpuno novom svetlu**.", 0),
+    ("Glumac koji je decenijama bio simbol **partizanskih, pobedničkih junaka**, sada igra slomljenog, razočaranog čoveka.", 0),
+    ("Stvara se **snažan kontrast**: nekadašnji „heroj bratstva i jedinstva“ suočava se sa raspadom svega u šta je verovao.", 0),
+    ("Poruka filma kroz Gvozdena: **rat uništava ne samo živote, već i ideale i ljudskost**.", 0),
     ("Njegova uloga gledaocu prenosi tugu, gubitak i besmislenost sukoba.", 0),
 ], size=19, razmak=13)
 
@@ -306,10 +311,10 @@ s = prs.slides.add_slide(BLANK)
 dodaj_pozadinu(s, SVETLA)
 naslov_slajda(s, 11, "Nagrade, priznanja i nasleđe")
 bullets(s, Inches(0.7), Inches(1.7), Inches(7.3), Inches(5.4), [
-    ("Osvojio je brojne nagrade, među kojima i prestižne Zlatne arene na festivalu u Puli.", 0),
-    ("Dobitnik je priznanja za životno delo i mnogih drugih umetničkih nagrada.", 0),
-    ("Smatra se jednim od najvećih glumaca ovih prostora svih vremena.", 0),
-    ("Preminuo je 22. maja 2016. u Beogradu, u 83. godini.", 0),
+    ("Osvojio je brojne nagrade, među kojima i prestižne **Zlatne arene** na festivalu u Puli.", 0),
+    ("Dobitnik je priznanja za **životno delo** i mnogih drugih umetničkih nagrada.", 0),
+    ("Smatra se **jednim od najvećih glumaca** ovih prostora svih vremena.", 0),
+    ("Preminuo je **22. maja 2016.** u Beogradu, u 83. godini.", 0),
     ("Njemu u čast izdata je i poštanska marka; filmovi mu se i danas rado gledaju.", 0),
 ], size=18, razmak=11)
 slika_cover(s, "pula.jpg", Inches(8.4), Inches(1.75), Inches(4.4), Inches(2.55))
@@ -327,10 +332,10 @@ dodaj_traku(s, SH - Inches(0.35), Inches(0.35), CRVENA)
 txt(s, Inches(1), Inches(0.9), Inches(11.3), Inches(0.9),
     "ZAKLJUČAK", 36, ZLATNA, bold=True, align=PP_ALIGN.CENTER)
 bullets(s, Inches(1.6), Inches(2.2), Inches(10.1), Inches(4.0), [
-    ("Bata Živojinović je svojim talentom i radom obeležio čitavu epohu domaćeg filma.", 0),
-    ("Od hrabrih partizanskih junaka do tragičnog Gvozdena, pokazao je izuzetan glumački raspon.", 0),
-    ("Uloga u filmu „Lepa sela lepo gore“ potvrdila je njegovu veličinu i u ozbiljnim, antiratnim ostvarenjima.", 0),
-    ("Ostaje upamćen kao legenda i jedan od najvoljenijih glumaca naših prostora.", 0),
+    ("Bata Živojinović je svojim talentom i radom **obeležio čitavu epohu** domaćeg filma.", 0),
+    ("Od hrabrih partizanskih junaka do tragičnog Gvozdena, pokazao je **izuzetan glumački raspon**.", 0),
+    ("Uloga u filmu „Lepa sela lepo gore“ potvrdila je njegovu veličinu i u **ozbiljnim, antiratnim ostvarenjima**.", 0),
+    ("Ostaje upamćen kao **legenda** i jedan od **najvoljenijih glumaca** naših prostora.", 0),
 ], size=20, boja=SVETLA, razmak=16, bullet_boja=ZLATNA)
 
 # ============================================================
