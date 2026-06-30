@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#0b0b0f" />
+<!-- iOS home-screen app -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Gym Coach" />
+<meta name="mobile-web-app-capable" content="yes" />
 <title>Gym TikTok Coach</title>
 <style>
   :root{
@@ -13,12 +18,16 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--txt);line-height:1.5;padding-bottom:90px}
+    background:var(--bg);color:var(--txt);line-height:1.5;padding-bottom:96px;-webkit-text-size-adjust:100%}
   header{position:sticky;top:0;z-index:50;background:rgba(11,11,15,.92);backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--line);padding:14px 16px 10px}
+    border-bottom:1px solid var(--line);padding:calc(12px + env(safe-area-inset-top)) 16px 10px}
+  .htop{display:flex;justify-content:space-between;align-items:center}
   header h1{margin:0;font-size:18px;font-weight:800;letter-spacing:.3px}
   header h1 span{color:var(--accent)}
   header p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  .lang{display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;flex:none}
+  .lang button{background:none;color:var(--muted);font-size:12px;font-weight:700;padding:6px 12px;border:none}
+  .lang button.on{background:var(--accent);color:#fff}
   main{padding:16px;max-width:680px;margin:0 auto}
   section{display:none;animation:fade .25s ease}
   section.active{display:block}
@@ -29,7 +38,7 @@
   .card.tight{padding:13px}
   label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:600}
   input,select,textarea{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--txt);
-    border-radius:10px;padding:11px 12px;font-size:15px;font-family:inherit}
+    border-radius:10px;padding:11px 12px;font-size:16px;font-family:inherit}
   textarea{resize:vertical;min-height:60px}
   .row{display:flex;gap:10px}.row>*{flex:1}
   button{cursor:pointer;border:none;font-family:inherit}
@@ -37,10 +46,10 @@
   .btn.alt{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
   .btn.sm{width:auto;padding:8px 14px;font-size:13px;margin:0}
   .chip{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:999px;
-    padding:6px 11px;font-size:13px;margin:4px 6px 0 0;cursor:pointer}
+    padding:7px 12px;font-size:13px;margin:4px 6px 0 0;cursor:pointer}
   .chip:active{background:var(--accent);border-color:var(--accent)}
   .hash{color:var(--accent2);font-size:13px;background:#142023;border:1px solid #1d3a3d;border-radius:8px;
-    padding:6px 9px;margin:4px 6px 0 0;display:inline-block;cursor:pointer}
+    padding:7px 10px;margin:4px 6px 0 0;display:inline-block;cursor:pointer}
   .muted{color:var(--muted);font-size:13px}
   .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
   .pill.good{background:rgba(46,204,113,.15);color:var(--good)}
@@ -53,9 +62,11 @@
   .diag b{color:var(--txt)}
   .meter{height:7px;background:var(--card2);border-radius:99px;overflow:hidden;margin:6px 0}
   .meter>i{display:block;height:100%;border-radius:99px}
-  nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,18,.96);backdrop-filter:blur(14px);
-    border-top:1px solid var(--line);display:flex;z-index:60;padding:6px 4px env(safe-area-inset-bottom)}
-  nav button{flex:1;background:none;color:var(--muted);font-size:10px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:3px}
+  nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,18,.97);backdrop-filter:blur(14px);
+    border-top:1px solid var(--line);display:flex;overflow-x:auto;z-index:60;
+    padding:6px 4px env(safe-area-inset-bottom);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  nav::-webkit-scrollbar{display:none}
+  nav button{flex:0 0 auto;min-width:62px;background:none;color:var(--muted);font-size:10px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px}
   nav button .ic{font-size:19px}
   nav button.on{color:var(--accent)}
   ul.clean{list-style:none;padding:0;margin:0}
@@ -77,225 +88,254 @@
   details summary:before{content:"＋ ";color:var(--accent)}
   details[open] summary:before{content:"－ "}
   details .body{padding:0 0 14px;font-size:13.5px;color:#d8d8e2}
-  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;
-    padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;opacity:0;transition:.3s;z-index:99;pointer-events:none}
+  .toast{position:fixed;bottom:104px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;
+    padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;opacity:0;transition:.3s;z-index:99;pointer-events:none;max-width:90%}
   .toast.show{opacity:1}
   .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px}
   a{color:var(--accent2)}
+  .capout{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;white-space:pre-line;font-size:15px;margin-top:14px}
+  .ios{background:linear-gradient(135deg,#1d1d27,#15151d);border:1px solid var(--line);border-radius:12px;padding:13px;font-size:13px;color:#d8d8e2}
+  .ios b{color:var(--txt)}
 </style>
 </head>
 <body>
 <header>
-  <h1>GYM <span>TikTok</span> COACH</h1>
-  <p id="hdrSub">Your private growth assistant · David Laid path</p>
+  <div class="htop">
+    <div>
+      <h1>GYM <span>TikTok</span> COACH</h1>
+      <p id="hdrSub">Tvoj privatni asistent za rast · put ka David Laidu</p>
+    </div>
+    <div class="lang">
+      <button id="lgSR" onclick="setLang('sr')">SR</button>
+      <button id="lgEN" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
 </header>
 
 <main>
-  <!-- ============ HOME / DASHBOARD ============ -->
+  <!-- ============ HOME ============ -->
   <section id="home" class="active">
     <div class="card">
-      <h2 style="margin-top:0">Hey <span id="homeName">athlete</span> 💪</h2>
-      <p class="muted" style="margin-top:0">Niche: <b id="homeNiche" style="color:var(--txt)">Gym · aesthetics · motivation</b><br/>
-      Goal: build a David-Laid-style brand from Pirot 🇷🇸</p>
+      <h2 style="margin-top:0">Zdravo <span id="homeName">šampione</span> 💪</h2>
+      <p class="muted" style="margin-top:0">Niša: <b id="homeNiche" style="color:var(--txt)">Teretana · estetika · motivacija</b><br/>
+      Cilj: izgraditi brend u stilu David Laida iz Pirota 🇷🇸 — za srpsku publiku.</p>
       <div class="grid2" style="margin-top:14px">
-        <div class="stat"><b id="kVids">0</b><small>videos logged</small></div>
-        <div class="stat"><b id="kEng">–</b><small>avg engagement</small></div>
+        <div class="stat"><b id="kVids">0</b><small id="lblVids">videa uneto</small></div>
+        <div class="stat"><b id="kEng">–</b><small id="lblEng">prosečan engagement</small></div>
       </div>
     </div>
 
     <div class="card">
-      <h3 style="margin-top:0">This week's focus</h3>
+      <h3 style="margin-top:0" id="lblFocus">Fokus ove nedelje</h3>
       <ul class="clean" id="weekFocus"></ul>
     </div>
 
     <div class="card">
-      <h3 style="margin-top:0">Quick wins (do today)</h3>
-      <ul class="clean">
-        <li><span class="n">1</span><span>Film a <b>15s hook test</b> — say your line in the first 1 second, no slow intro.</span></li>
-        <li><span class="n">2</span><span>Post at a <b>peak time</b> (see Schedule tab) and reply to every comment in the first hour.</span></li>
-        <li><span class="n">3</span><span>Watch 3 viral gym videos, screenshot the structure, recreate one with your own twist.</span></li>
-      </ul>
+      <h3 style="margin-top:0" id="lblWins">Brze pobede (uradi danas)</h3>
+      <ul class="clean" id="quickWins"></ul>
     </div>
-    <p class="muted" style="text-align:center">Everything is saved only on this phone. Nobody else sees it.</p>
+    <p class="muted" style="text-align:center" id="lblPriv">Sve je sačuvano samo na ovom telefonu. Niko drugi ne vidi.</p>
   </section>
 
   <!-- ============ ANALYZE ============ -->
   <section id="analyze">
-    <h2>Analyze a video</h2>
+    <h2 id="anH">Analiziraj video</h2>
     <div class="card">
-      <p class="muted" style="margin-top:0">Open TikTok → your video → tap <b>···</b> → <b>Analytics</b>. Type the numbers in. The coach tells you <i>why</i> it did well or poorly and what to fix.</p>
-      <label>Short title / what it was about</label>
-      <input id="aTitle" placeholder="e.g. Back day + David Laid quote" />
+      <p class="muted" style="margin-top:0" id="anIntro">Otvori TikTok → svoj video → tapni <b>···</b> → <b>Analitika</b>. Unesi brojeve. Trener ti kaže <i>zašto</i> je prošao dobro ili loše i šta da popraviš.</p>
+      <label id="anL1">Kratak naslov / o čemu je bio</label>
+      <input id="aTitle" placeholder="npr. Dan za leđa + citat David Laida" />
       <div class="row">
-        <div><label>Views</label><input id="aViews" type="number" inputmode="numeric" placeholder="0"/></div>
-        <div><label>Likes</label><input id="aLikes" type="number" inputmode="numeric" placeholder="0"/></div>
+        <div><label>Pregledi</label><input id="aViews" type="number" inputmode="numeric" placeholder="0"/></div>
+        <div><label>Lajkovi</label><input id="aLikes" type="number" inputmode="numeric" placeholder="0"/></div>
       </div>
       <div class="row">
-        <div><label>Comments</label><input id="aComments" type="number" inputmode="numeric" placeholder="0"/></div>
-        <div><label>Shares</label><input id="aShares" type="number" inputmode="numeric" placeholder="0"/></div>
+        <div><label>Komentari</label><input id="aComments" type="number" inputmode="numeric" placeholder="0"/></div>
+        <div><label>Deljenja</label><input id="aShares" type="number" inputmode="numeric" placeholder="0"/></div>
       </div>
       <div class="row">
-        <div><label>Saves (optional)</label><input id="aSaves" type="number" inputmode="numeric" placeholder="0"/></div>
-        <div><label>Avg watch (optional)</label>
-          <select id="aWatch">
-            <option value="">don't know</option>
-            <option value="full">Watched most/all</option>
-            <option value="mid">Watched about half</option>
-            <option value="low">Dropped early</option>
-          </select>
+        <div><label id="anLSave">Čuvanja (opciono)</label><input id="aSaves" type="number" inputmode="numeric" placeholder="0"/></div>
+        <div><label id="anLWatch">Prosečno gledanje</label>
+          <select id="aWatch"></select>
         </div>
       </div>
-      <label>Video length</label>
-      <select id="aLen">
-        <option value="short">Under 15s</option>
-        <option value="mid" selected>15–35s</option>
-        <option value="long">35s+</option>
-      </select>
-      <button class="btn" onclick="analyze()">Diagnose this video →</button>
+      <label id="anLLen">Dužina videa</label>
+      <select id="aLen"></select>
+      <div class="row">
+        <div><label id="anLDay">Dan objave (za „najbolje vreme")</label><select id="aDay"></select></div>
+        <div><label id="anLTime">Vreme objave</label><select id="aBucket"></select></div>
+      </div>
+      <button class="btn" onclick="analyze()" id="anBtn">Dijagnostikuj ovaj video →</button>
     </div>
     <div id="aResult"></div>
   </section>
 
+  <!-- ============ CAPTION GENERATOR ============ -->
+  <section id="caption">
+    <h2 id="capH">Generator opisa (caption)</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0" id="capIntro">Jedan tap → ceo paket za tvoj video: hook (tekst preko videa) + opis + poziv na akciju + heštagovi. Sve na srpskom za tvoju publiku.</p>
+      <label id="capL">Tip videa</label>
+      <select id="capType"></select>
+      <button class="btn" onclick="genCaption()" id="capBtn">✍️ Generiši opis</button>
+      <div id="capResult"></div>
+    </div>
+    <div class="ios" id="capTip"></div>
+  </section>
+
   <!-- ============ LIBRARY ============ -->
   <section id="library">
-    <h2>Your videos</h2>
+    <h2 id="libH">Tvoji videi</h2>
     <div id="libList"></div>
   </section>
 
   <!-- ============ IDEAS ============ -->
   <section id="ideas">
-    <h2>What to post</h2>
+    <h2 id="idH">Šta da postaviš</h2>
     <div class="card tight">
-      <p class="muted" style="margin-top:0">Tap to get a fresh idea built for the gym niche. Each one is a proven format — just add your face and your story.</p>
-      <button class="btn sm" onclick="rollIdea()">🎬 Give me an idea</button>
+      <p class="muted" style="margin-top:0" id="idIntro">Tapni za novu ideju napravljenu za gym nišu. Svaka je dokazan format — samo dodaj svoje lice i svoju priču.</p>
+      <button class="btn sm" onclick="rollIdea()" id="idBtn">🎬 Daj mi ideju</button>
       <div id="ideaBox" style="margin-top:14px"></div>
     </div>
 
-    <h3>Content pillars (rotate these)</h3>
+    <h3 id="idPillH">Stubovi sadržaja (rotiraj ih)</h3>
     <div class="card tight">
-      <p class="muted" style="margin-top:0">A strong gym page is ~5 repeating themes. Aim each video at one:</p>
-      <details><summary>1 · Transformation & progress</summary><div class="body">Your "before vs now", weekly check-ins, "1 year natural progress", flexing PRs. People follow a <b>journey</b>. Show you're 19 and chasing a David Laid physique — that arc is your superpower.</div></details>
-      <details><summary>2 · Aesthetics & gym posing</summary><div class="body">Pump clips, posing in good lighting, "how to make your back look wider", outfit/lighting that shows conditioning. High save + share rate.</div></details>
-      <details><summary>3 · Motivation & mindset</summary><div class="body">Discipline over motivation, David Laid quotes, "nobody is coming to save you", training when you don't feel like it. Pairs great with a hard set + text overlay.</div></details>
-      <details><summary>4 · How-to / value</summary><div class="body">"3 exercises for a bigger chest", form fixes, beginner mistakes, what you eat in a day on a Serbian budget. Value = saves = reach.</div></details>
-      <details><summary>5 · Relatable / personality</summary><div class="body">Gym humor, "POV: leg day", gym in Pirot vs big city gyms, training in winter. This is what makes people pick YOU over a faceless page.</div></details>
+      <p class="muted" style="margin-top:0" id="idPillIntro">Jaka gym stranica ima ~5 tema koje se ponavljaju. Usmeri svaki video na jednu:</p>
+      <div id="pillarBox"></div>
     </div>
 
-    <h3>Hooks that stop the scroll</h3>
+    <h3 id="idHookH">Hookovi koji zaustave skrol</h3>
     <div class="card tight">
-      <p class="muted" style="margin-top:0">Say or show one of these in the <b>first 1 second</b>. Tap to copy.</p>
+      <p class="muted" style="margin-top:0" id="idHookIntro">Izgovori ili pokaži jedan od ovih u <b>prvoj sekundi</b>. Tapni da kopiraš.</p>
       <div id="hookBox"></div>
     </div>
   </section>
 
   <!-- ============ HASHTAGS ============ -->
   <section id="tags">
-    <h2>Hashtags</h2>
+    <h2 id="tgH">Heštagovi</h2>
     <div class="card">
-      <p class="muted" style="margin-top:0">Best practice: <b>3–5 tags</b>, mix one big + a few niche + one local. Don't spam 30 tags. Pick a video type:</p>
-      <select id="tagType" onchange="buildTags()">
-        <option value="transformation">Transformation / progress</option>
-        <option value="aesthetic">Aesthetics / posing</option>
-        <option value="motivation">Motivation / mindset</option>
-        <option value="howto">How-to / tips</option>
-        <option value="relatable">Relatable / funny</option>
-      </select>
+      <p class="muted" style="margin-top:0" id="tgIntro">Pravilo: <b>3–5 tagova</b>, miks jedan veliki + par niša + jedan lokalni. Ne spamuj 30 tagova. Izaberi tip videa:</p>
+      <select id="tagType" onchange="buildTags()"></select>
       <div id="tagOut" style="margin-top:14px"></div>
-      <button class="btn alt" id="copyTags" onclick="copyTags()">📋 Copy this set</button>
+      <button class="btn alt" id="copyTags" onclick="copyTags()">📋 Kopiraj ovaj set</button>
     </div>
     <div class="card tight">
-      <h3 style="margin-top:0">Local reach (Serbia / Balkan)</h3>
-      <p class="muted">Adding local tags helps you get seen by people who can actually become a real-life community and dominate a smaller pond first.</p>
+      <h3 style="margin-top:0" id="tgLocH">Lokalni doseg (Srbija / Balkan)</h3>
+      <p class="muted" id="tgLocIntro">Lokalni tagovi te dovode pred ljude koji mogu postati prava zajednica — prvo zavladaj manjim jezerom.</p>
       <div id="localTags"></div>
     </div>
   </section>
 
   <!-- ============ SCHEDULE ============ -->
   <section id="schedule">
-    <h2>Posting schedule</h2>
+    <h2 id="scH">Plan objavljivanja</h2>
     <div class="card">
-      <h3 style="margin-top:0">How often</h3>
-      <p>Post <b>1–2 videos per day</b>, every day, for 30 days. Consistency beats perfection — the algorithm rewards volume + watch time while you're small. Quality matters, but a "perfect" video once a week will not grow you.</p>
+      <h3 style="margin-top:0" id="scF1">Koliko često</h3>
+      <p id="scF1b">Postavljaj <b>1–2 videa dnevno</b>, svaki dan, 30 dana. Doslednost pobeđuje savršenstvo — algoritam nagrađuje količinu + watch time dok si mali. Kvalitet je bitan, ali jedan „savršen" video nedeljno te neće podići.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">Best times (Serbia time)</h3>
-      <p class="muted" style="margin-top:0">Your followers are mostly students + gym-goers. Post ~30 min before they're free:</p>
-      <ul class="clean">
-        <li><span class="day">Mon–Fri</span><span>7:00–8:00 (morning scroll) · 14:00–16:00 (after school) · <b>19:00–22:00</b> (prime, best)</span></li>
-        <li><span class="day">Sat–Sun</span><span>11:00–13:00 · 19:00–22:00</span></li>
-      </ul>
-      <p class="muted">After 1–2 weeks, check your own Analytics → Followers → most active times and adjust to YOUR audience.</p>
+      <h3 style="margin-top:0" id="scF2">Najbolja vremena (srpsko vreme)</h3>
+      <p class="muted" style="margin-top:0" id="scF2b">Tvoji pratioci su uglavnom đaci/studenti + ljudi iz teretane. Postavi ~30 min pre nego što budu slobodni:</p>
+      <ul class="clean" id="timeList"></ul>
+      <p class="muted" id="scF2c">Posle 1–2 nedelje proveri svoju Analitiku → Pratioci → najaktivnija vremena i prilagodi SVOJOJ publici.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">Stories — what & how often</h3>
-      <p>Post <b>2–4 stories/day</b>. Stories build loyalty with people who already follow you (they don't grow reach, but they turn viewers into fans):</p>
-      <ul class="clean">
-        <li><span class="n">•</span><span><b>Behind the scenes:</b> walking to the gym, pre-workout, the boring real grind.</span></li>
-        <li><span class="n">•</span><span><b>Polls/questions:</b> "Push or pull today?", "Rate my form" — replies boost your relationship score.</span></li>
-        <li><span class="n">•</span><span><b>Daily check-in:</b> meal, water, mood — show the discipline, not just highlights.</span></li>
-        <li><span class="n">•</span><span><b>Re-share your post</b> to story so more followers catch it.</span></li>
-      </ul>
+      <h3 style="margin-top:0" id="scF3">Storiji — šta i koliko često</h3>
+      <p id="scF3b">Postavi <b>2–4 storija dnevno</b>. Storiji grade lojalnost kod onih koji te već prate (ne donose doseg, ali pretvaraju gledaoce u fanove):</p>
+      <ul class="clean" id="storyList"></ul>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">Weekly template</h3>
+      <h3 style="margin-top:0" id="scF4">Nedeljni šablon</h3>
       <ul class="clean" id="weekTemplate"></ul>
     </div>
   </section>
 
   <!-- ============ TRENDS ============ -->
   <section id="trends">
-    <h2>Trends for your niche</h2>
+    <h2 id="trH">Trendovi za tvoju nišu</h2>
     <div class="card tight">
-      <p class="muted" style="margin-top:0">Trends change weekly — these are <b>evergreen gym trend formats</b> that keep coming back. Put your spin on whatever sound is hot right now.</p>
+      <p class="muted" style="margin-top:0" id="trIntro">Trendovi se menjaju nedeljno — ovo su <b>večni gym formati</b> koji se stalno vraćaju. Stavi svoj pečat na zvuk koji je trenutno popularan.</p>
       <div id="trendBox"></div>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">How to find what's trending RIGHT NOW</h3>
-      <ul class="clean">
-        <li><span class="n">1</span><span>Open TikTok search → type <b>"gym"</b>, <b>"fitness"</b>, <b>"natural"</b> and watch what's getting millions this week.</span></li>
-        <li><span class="n">2</span><span>When scrolling, if a <b>sound</b> shows ▶ rising / you hear it 3+ times in gym videos — save it, use it within 3–5 days.</span></li>
-        <li><span class="n">3</span><span>Follow David Laid, Tom Daley-type aesthetics pages, and 5 Balkan gym creators. Copy the <i>format</i>, not the person.</span></li>
-        <li><span class="n">4</span><span>Tap "Add sound" → TikTok shows trending audio with an arrow icon. Use those.</span></li>
-      </ul>
+      <h3 style="margin-top:0" id="trFindH">Kako naći šta je TRENUTNO popularno</h3>
+      <ul class="clean" id="trFind"></ul>
     </div>
   </section>
 
   <!-- ============ PROFILE ============ -->
   <section id="profile">
-    <h2>Profile setup</h2>
+    <h2 id="prH">Podešavanje profila</h2>
     <div class="card">
-      <h3 style="margin-top:0">Make your profile convert</h3>
-      <p class="muted">When someone watches one video, they check your profile in 2 seconds and decide to follow or leave. Optimize it:</p>
+      <h3 style="margin-top:0" id="prC1">Napravi da ti profil konvertuje</h3>
+      <p class="muted" id="prC1b">Kad neko pogleda jedan video, za 2 sekunde otvori tvoj profil i odluči da li te prati ili odlazi. Optimizuj ga:</p>
       <div id="profChecks"></div>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">Bio templates (tap to copy)</h3>
+      <h3 style="margin-top:0" id="prC2">Bio šabloni (tapni da kopiraš)</h3>
       <div id="bioBox"></div>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">Your details</h3>
-      <label>Your name / handle</label>
-      <input id="setName" placeholder="e.g. Veo / @veo.fit" />
-      <button class="btn" onclick="saveProfile()">Save</button>
+      <h3 style="margin-top:0" id="prC3">Tvoji podaci</h3>
+      <label id="prName">Tvoje ime / handle</label>
+      <input id="setName" placeholder="npr. Veo / @veo.fit" />
+      <button class="btn" onclick="saveProfile()" id="prSave">Sačuvaj</button>
     </div>
     <div class="card tight">
-      <h3 style="margin-top:0">Your data</h3>
-      <p class="muted">Everything lives only on this device. Back it up or move phones:</p>
+      <h3 style="margin-top:0" id="prC4">Backup podataka</h3>
+      <p class="muted" id="prC4b">Sve je samo na ovom uređaju. Napravi backup ili prebaci na drugi telefon:</p>
       <div class="row">
-        <button class="btn alt sm" style="flex:1" onclick="exportData()">⬇ Export</button>
-        <button class="btn alt sm" style="flex:1" onclick="document.getElementById('imp').click()">⬆ Import</button>
+        <button class="btn alt sm" style="flex:1" onclick="exportData()" id="prExp">⬇ Izvezi</button>
+        <button class="btn alt sm" style="flex:1" onclick="document.getElementById('imp').click()" id="prImp">⬆ Uvezi</button>
       </div>
       <input id="imp" type="file" accept="application/json" style="display:none" onchange="importData(event)" />
-      <button class="btn alt sm" style="width:100%;margin-top:10px;color:var(--bad)" onclick="resetAll()">Reset everything</button>
+      <button class="btn alt sm" style="width:100%;margin-top:10px;color:var(--bad)" onclick="resetAll()" id="prReset">Obriši sve</button>
     </div>
   </section>
 
   <!-- ============ PLAN ============ -->
   <section id="plan">
-    <h2>30-day glow-up plan</h2>
+    <h2 id="plH">Plan za 30 dana</h2>
     <div class="card tight">
-      <p class="muted" style="margin-top:0">Follow this and you'll have a real, growing page in a month. Check items off:</p>
+      <p class="muted" style="margin-top:0" id="plIntro">Prati ovo i za mesec dana imaš pravu, rastuću stranicu. Štikliraj stavke:</p>
       <div id="planChecks"></div>
+    </div>
+  </section>
+
+  <!-- ============ BEST TIME ============ -->
+  <section id="besttime">
+    <h2 id="btH">Najbolje vreme za objavu</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0" id="btIntro"></p>
+      <div id="btResult"></div>
+    </div>
+    <div class="card tight">
+      <h3 style="margin-top:0" id="btDefH"></h3>
+      <ul class="clean" id="btDefList"></ul>
+    </div>
+  </section>
+
+  <!-- ============ FOLLOWERS ============ -->
+  <section id="followers">
+    <h2 id="flH">Praćenje pratilaca</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0" id="flIntro"></p>
+      <div class="row">
+        <div><label id="flLc">Broj pratilaca</label><input id="flCount" type="number" inputmode="numeric" placeholder="1240"/></div>
+        <div><label id="flLd">Datum</label><input id="flDate" type="date"/></div>
+      </div>
+      <button class="btn" onclick="addFollower()" id="flBtn">Dodaj unos</button>
+    </div>
+    <div id="flStats"></div>
+    <div id="flChart"></div>
+    <div id="flList"></div>
+  </section>
+
+  <!-- ============ iOS HELP ============ -->
+  <section id="help">
+    <h2 id="hpH">Kako instalirati na iPhone</h2>
+    <div class="card">
+      <ul class="clean" id="iosSteps"></ul>
     </div>
   </section>
 </main>
@@ -304,28 +344,449 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------------- STATE ---------------- */
-const KEY='gymTikTokCoach_v1';
+/* ================= STATE ================= */
+const KEY='gymTikTokCoach_v2';
 let state=load();
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){return fresh()}}
-function fresh(){return {name:'', videos:[], checks:{}, plan:{}}}
+function load(){try{return Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)))}catch(e){return fresh()}}
+function fresh(){return {name:'', lang:'sr', videos:[], checks:{}, plan:{}, followers:[]}}
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
+function L(){return state.lang||'sr'}
+function tr(o){return o[L()]||o.sr}
 
-/* ---------------- NAV ---------------- */
-const TABS=[
-  ['home','🏠','Home'],['analyze','🔬','Analyze'],['library','📁','Videos'],
-  ['ideas','💡','Ideas'],['tags','#️⃣','Tags'],['schedule','📅','Plan'],
-  ['trends','🔥','Trends'],['profile','👤','Profile'],['plan','🚀','30-Day']
-];
+/* ================= I18N STRINGS ================= */
+const T={
+  hdrSub:{sr:'Tvoj privatni asistent za rast · put ka David Laidu',en:'Your private growth assistant · David Laid path'},
+  homeHi:{sr:'Zdravo',en:'Hey'},
+  niche:{sr:'Teretana · estetika · motivacija',en:'Gym · aesthetics · motivation'},
+  nicheLine:{sr:'Cilj: izgraditi brend u stilu David Laida iz Pirota 🇷🇸 — za srpsku publiku.',en:'Goal: build a David-Laid-style brand from Pirot 🇷🇸 — for a Serbian audience.'},
+  lblVids:{sr:'videa uneto',en:'videos logged'},
+  lblEng:{sr:'prosečan engagement',en:'avg engagement'},
+  lblFocus:{sr:'Fokus ove nedelje',en:"This week's focus"},
+  lblWins:{sr:'Brze pobede (uradi danas)',en:'Quick wins (do today)'},
+  lblPriv:{sr:'Sve je sačuvano samo na ovom telefonu. Niko drugi ne vidi.',en:'Everything is saved only on this phone. Nobody else sees it.'},
+  anH:{sr:'Analiziraj video',en:'Analyze a video'},
+  anIntro:{sr:'Otvori TikTok → svoj video → tapni <b>···</b> → <b>Analitika</b>. Unesi brojeve. Trener ti kaže <i>zašto</i> je prošao dobro ili loše i šta da popraviš.',en:'Open TikTok → your video → tap <b>···</b> → <b>Analytics</b>. Type the numbers. The coach tells you <i>why</i> it did well or poorly and what to fix.'},
+  anL1:{sr:'Kratak naslov / o čemu je bio',en:'Short title / what it was about'},
+  anLSave:{sr:'Čuvanja (opciono)',en:'Saves (optional)'},
+  anLWatch:{sr:'Prosečno gledanje',en:'Avg watch'},
+  anLLen:{sr:'Dužina videa',en:'Video length'},
+  anBtn:{sr:'Dijagnostikuj ovaj video →',en:'Diagnose this video →'},
+  capH:{sr:'Generator opisa (caption)',en:'Caption generator'},
+  capIntro:{sr:'Jedan tap → ceo paket za tvoj video: hook (tekst preko videa) + opis + poziv na akciju + heštagovi. Sve na srpskom za tvoju publiku.',en:'One tap → a full package for your video: hook (on-screen text) + caption + call-to-action + hashtags.'},
+  capL:{sr:'Tip videa',en:'Video type'},
+  capBtn:{sr:'✍️ Generiši opis',en:'✍️ Generate caption'},
+  capCopy:{sr:'📋 Kopiraj ceo opis',en:'📋 Copy whole caption'},
+  capHookLbl:{sr:'TEKST PREKO VIDEA (hook)',en:'ON-SCREEN TEXT (hook)'},
+  capDescLbl:{sr:'OPIS ISPOD VIDEA',en:'CAPTION'},
+  capAgain:{sr:'🔁 Daj drugi',en:'🔁 Give another'},
+  libH:{sr:'Tvoji videi',en:'Your videos'},
+  libEmpty:{sr:'Još nema videa.<br/>Idi na <b>Analiza</b> i dodaj prvi.',en:'No videos yet.<br/>Go to <b>Analyze</b> and add your first.'},
+  topFix:{sr:'Glavna popravka:',en:'Top fix:'},
+  idH:{sr:'Šta da postaviš',en:'What to post'},
+  idIntro:{sr:'Tapni za novu ideju napravljenu za gym nišu. Svaka je dokazan format — samo dodaj svoje lice i svoju priču.',en:'Tap for a fresh idea built for the gym niche. Each is a proven format.'},
+  idBtn:{sr:'🎬 Daj mi ideju',en:'🎬 Give me an idea'},
+  idPillH:{sr:'Stubovi sadržaja (rotiraj ih)',en:'Content pillars (rotate these)'},
+  idPillIntro:{sr:'Jaka gym stranica ima ~5 tema koje se ponavljaju. Usmeri svaki video na jednu:',en:'A strong gym page is ~5 repeating themes. Aim each video at one:'},
+  idHookH:{sr:'Hookovi koji zaustave skrol',en:'Hooks that stop the scroll'},
+  idHookIntro:{sr:'Izgovori ili pokaži jedan od ovih u <b>prvoj sekundi</b>. Tapni da kopiraš.',en:'Say or show one of these in the <b>first second</b>. Tap to copy.'},
+  tgH:{sr:'Heštagovi',en:'Hashtags'},
+  tgIntro:{sr:'Pravilo: <b>3–5 tagova</b>, miks jedan veliki + par niša + jedan lokalni. Ne spamuj 30 tagova. Izaberi tip videa:',en:'Best practice: <b>3–5 tags</b>, one big + a few niche + one local. Don\'t spam 30. Pick a video type:'},
+  copyTags:{sr:'📋 Kopiraj ovaj set',en:'📋 Copy this set'},
+  tgLocH:{sr:'Lokalni doseg (Srbija / Balkan)',en:'Local reach (Serbia / Balkan)'},
+  tgLocIntro:{sr:'Lokalni tagovi te dovode pred ljude koji mogu postati prava zajednica — prvo zavladaj manjim jezerom.',en:'Local tags reach people who can become a real community — win the smaller pond first.'},
+  scH:{sr:'Plan objavljivanja',en:'Posting schedule'},
+  scF1:{sr:'Koliko često',en:'How often'},
+  scF1b:{sr:'Postavljaj <b>1–2 videa dnevno</b>, svaki dan, 30 dana. Doslednost pobeđuje savršenstvo — algoritam nagrađuje količinu + watch time dok si mali. Kvalitet je bitan, ali jedan „savršen" video nedeljno te neće podići.',en:'Post <b>1–2 videos per day</b>, every day, for 30 days. Consistency beats perfection while you\'re small.'},
+  scF2:{sr:'Najbolja vremena (srpsko vreme)',en:'Best times (Serbia time)'},
+  scF2b:{sr:'Tvoji pratioci su uglavnom đaci/studenti + ljudi iz teretane. Postavi ~30 min pre nego što budu slobodni:',en:'Your followers are mostly students + gym-goers. Post ~30 min before they\'re free:'},
+  scF2c:{sr:'Posle 1–2 nedelje proveri svoju Analitiku → Pratioci → najaktivnija vremena i prilagodi SVOJOJ publici.',en:'After 1–2 weeks, check Analytics → Followers → most active times and adjust.'},
+  scF3:{sr:'Storiji — šta i koliko često',en:'Stories — what & how often'},
+  scF3b:{sr:'Postavi <b>2–4 storija dnevno</b>. Storiji grade lojalnost kod onih koji te već prate (ne donose doseg, ali pretvaraju gledaoce u fanove):',en:'Post <b>2–4 stories/day</b>. They build loyalty with existing followers.'},
+  scF4:{sr:'Nedeljni šablon',en:'Weekly template'},
+  trH:{sr:'Trendovi za tvoju nišu',en:'Trends for your niche'},
+  trIntro:{sr:'Trendovi se menjaju nedeljno — ovo su <b>večni gym formati</b> koji se stalno vraćaju. Stavi svoj pečat na zvuk koji je trenutno popularan.',en:'Trends change weekly — these are <b>evergreen gym formats</b>. Put your spin on whatever sound is hot now.'},
+  trFindH:{sr:'Kako naći šta je TRENUTNO popularno',en:'How to find what\'s trending RIGHT NOW'},
+  prH:{sr:'Podešavanje profila',en:'Profile setup'},
+  prC1:{sr:'Napravi da ti profil konvertuje',en:'Make your profile convert'},
+  prC1b:{sr:'Kad neko pogleda jedan video, za 2 sekunde otvori tvoj profil i odluči da li te prati ili odlazi. Optimizuj ga:',en:'When someone watches one video, they check your profile in 2s and decide to follow or leave.'},
+  prC2:{sr:'Bio šabloni (tapni da kopiraš)',en:'Bio templates (tap to copy)'},
+  prC3:{sr:'Tvoji podaci',en:'Your details'},
+  prName:{sr:'Tvoje ime / handle',en:'Your name / handle'},
+  prSave:{sr:'Sačuvaj',en:'Save'},
+  prC4:{sr:'Backup podataka',en:'Your data'},
+  prC4b:{sr:'Sve je samo na ovom uređaju. Napravi backup ili prebaci na drugi telefon:',en:'Everything lives only on this device. Back it up or move phones:'},
+  prExp:{sr:'⬇ Izvezi',en:'⬇ Export'},prImp:{sr:'⬆ Uvezi',en:'⬆ Import'},prReset:{sr:'Obriši sve',en:'Reset everything'},
+  plH:{sr:'Plan za 30 dana',en:'30-day plan'},
+  plIntro:{sr:'Prati ovo i za mesec dana imaš pravu, rastuću stranicu. Štikliraj stavke:',en:'Follow this and in a month you\'ll have a real, growing page. Check items off:'},
+  hpH:{sr:'Kako instalirati na iPhone',en:'Install on iPhone'},
+  anLDay:{sr:'Dan objave (za „najbolje vreme")',en:'Day posted (for "best time")'},
+  anLTime:{sr:'Vreme objave',en:'Time posted'},
+  btH:{sr:'Najbolje vreme za objavu',en:'Best time to post'},
+  btIntro:{sr:'Računa se iz tvojih videa — koji dan i deo dana ti donosi najviše pregleda. Upiši „Dan objave" i „Vreme objave" u tabu Analiza za svaki video.',en:'Calculated from your videos — which day and time of day gets you the most views. Add "Day posted" and "Time posted" in the Analyze tab.'},
+  btDefH:{sr:'Dok skupljaš podatke — opšte preporuke (Srbija)',en:'Until you have data — defaults (Serbia)'},
+  flH:{sr:'Praćenje pratilaca',en:'Follower tracker'},
+  flIntro:{sr:'Upiši broj pratilaca s vremena na vreme (npr. svaki dan ili svake nedelje). App crta rast i predviđa kuda ideš.',en:'Log your follower count now and then (daily or weekly). The app charts your growth and projects where you\'re heading.'},
+  flLc:{sr:'Broj pratilaca',en:'Follower count'},
+  flLd:{sr:'Datum',en:'Date'},
+  flBtn:{sr:'Dodaj unos',en:'Add entry'},
+  copied:{sr:'Kopirano! ✅',en:'Copied! ✅'},
+  saved:{sr:'Sačuvano',en:'Saved'},
+  deleted:{sr:'Obrisano',en:'Deleted'},
+  enterViews:{sr:'Prvo unesi preglede',en:'Enter the views first'},
+  nav:{home:{sr:'Početna',en:'Home'},analyze:{sr:'Analiza',en:'Analyze'},caption:{sr:'Opis',en:'Caption'},
+    besttime:{sr:'Vreme',en:'Best time'},followers:{sr:'Pratioci',en:'Followers'},
+    library:{sr:'Videi',en:'Videos'},ideas:{sr:'Ideje',en:'Ideas'},tags:{sr:'Tagovi',en:'Tags'},
+    schedule:{sr:'Plan',en:'Plan'},trends:{sr:'Trendovi',en:'Trends'},profile:{sr:'Profil',en:'Profile'},
+    plan:{sr:'30 dana',en:'30-Day'},help:{sr:'iPhone',en:'iPhone'}}
+};
+
+/* ================= CONTENT (bilingual) ================= */
+const QUICK={sr:[
+  'Snimi <b>test hooka od 15s</b> — izgovori liniju u prvoj sekundi, bez sporog uvoda.',
+  'Postavi u <b>udarnom terminu</b> (vidi tab Plan) i odgovori na svaki komentar u prvom satu.',
+  'Pogledaj 3 viralna gym videa, screenshot strukturu i napravi jedan po svom.'
+],en:[
+  'Film a <b>15s hook test</b> — say your line in the first second, no slow intro.',
+  'Post at a <b>peak time</b> (see Plan tab) and reply to every comment in the first hour.',
+  'Watch 3 viral gym videos, screenshot the structure, recreate one your way.'
+]};
+
+const PILLARS={sr:[
+  ['1 · Transformacija i napredak','Tvoj „pre vs sad", nedeljne provere, „godinu dana prirodno", flex PR-ova. Ljudi prate <b>putovanje</b>. Imaš 19 i juriš fizik kao David Laid — taj luk je tvoja supermoć.'],
+  ['2 · Estetika i poziranje','Pump klipovi, poziranje u dobrom svetlu, „kako da leđa izgledaju šire", oprema/svetlo koje pokazuje kondiciju. Visok save + share.'],
+  ['3 · Motivacija i mindset','Disciplina iznad motivacije, citati David Laida, „niko neće doći da te spasi", trening kad ti se ne ide. Ide uz težak set + tekst preko.'],
+  ['4 · Saveti / vrednost','„3 vežbe za veće grudi", popravke forme, greške početnika, šta jedeš u danu na srpski budžet. Vrednost = čuvanja = doseg.'],
+  ['5 · Relatable / ličnost','Gym humor, „POV: dan za noge", teretana u Pirotu vs veliki grad, trening zimi. Ovo čini da biraju TEBE umesto bezlične stranice.']
+],en:[
+  ['1 · Transformation & progress','Your before/now, weekly check-ins, "1 year natural", flexing PRs. People follow a <b>journey</b>.'],
+  ['2 · Aesthetics & posing','Pump clips, posing in good light, "wider back" tips. High save + share rate.'],
+  ['3 · Motivation & mindset','Discipline over motivation, David Laid quotes, training when you don\'t feel like it.'],
+  ['4 · How-to / value','"3 chest exercises", form fixes, beginner mistakes, budget meals. Value = saves = reach.'],
+  ['5 · Relatable / personality','Gym humor, "POV: leg day", training in a small town. Makes people pick YOU.']
+]};
+
+const HOOKS={sr:[
+  'Prestani da skrolaš ako si mršav i hoćeš da rasteš.',
+  'Ovako izgleda godinu dana prirodnog treninga.',
+  'Niko mi ovo nije rekao kad sam počinjao.',
+  'POV: konačno si se navukao na teretanu.',
+  'Imam 19 i jurim fizik kao David Laid — dan 1 vs sad.',
+  'Nisi lenj. Samo ti je previše udobno. Gledaj.',
+  'Radi ovo svaki dan za leđa za širu figuru.',
+  'Ocenite mi fizik iskreno u komentarima.',
+  'Svi preskaču ovo i ostaju mali.',
+  'Ako treniraš u malom gradu, ovo je za tebe.',
+  '3 stvari koje bih rekao sebi prvog dana u teretani.',
+  'Gledaj do kraja za rezultat.'
+],en:[
+  'Stop scrolling if you\'re skinny and want to grow.',
+  'This is what 1 year natural looks like.',
+  'Nobody told me this when I started.',
+  'POV: you finally got addicted to the gym.',
+  'I\'m 19 chasing a David Laid physique — day 1 vs now.',
+  'You\'re not lazy. You\'re just comfortable. Watch.',
+  'Do this every back day for a wider frame.',
+  'Rate my physique honestly in the comments.',
+  'Everyone skips this and stays small.',
+  'If you train in a small town, this is for you.',
+  '3 things I\'d tell my first-day self.',
+  'Watch till the end for the result.'
+]};
+
+const IDEAS={sr:[
+  {t:'„Godinu dana prirodne transformacije"',d:'Stara slika i sad, jedna do druge. Trending zvuk + tekst: „počeo sam sa 60kg, plašio se teretane". Transformacije najviše donose pratioce mladim lifterima.'},
+  {t:'„POV: dan za noge u Pirotu"',d:'Smešan relatable skit kako mrziš/razbijaš dan za noge. Lokalno + humor + teretana = deljivo.'},
+  {t:'„Kako dobiti šira leđa (3 vežbe)"',d:'Brz prikaz lat mašine, veslanja i zgiba sa tekstom. Vredan sadržaj = čuvanja = doseg.'},
+  {t:'„Postajem David Laid — dan u životu"',d:'Od jutra do mraka: obrok, trening, san. Uokviri kao put ka fiziku tvog idola. Ljudi prate priču.'},
+  {t:'„Ocenite fizik (19, prirodno)"',d:'Poziranje u dobrom svetlu, traži iskrenu ocenu u komentarima. Mamac za komentare = boost.'},
+  {t:'„Šta jedem u danu na studentski budžet"',d:'Jeftini obroci s puno proteina u Srbiji. Relatable + korisno, ogromno za tvoju publiku.'},
+  {t:'„Niko neće doći da te spasi"',d:'Težak set + disciplina u stilu David Laida, tekst preko + emotivan zvuk. Stub motivacije.'},
+  {t:'„Greške koje sam pravio kao početnik"',d:'Nabroj 3 stvari koje bi rekao sebi ranije. Početnici su tvoja najveća publika.'},
+  {t:'„30 dana prirodnog napretka"',d:'Nedeljni klipovi spojeni zajedno. Pokaži malu ali stvarnu promenu. Gradi seriju.'},
+  {t:'„Trening kad ti se ne ide"',d:'Snimi hladan/umoran put do teretane, pa pump. Disciplina > motivacija.'},
+  {t:'„Pump + poziranje rutina"',d:'Poslednji set, pa poze pred ogledalom. Čist estetski stub, mnogo čuvanja i deljenja.'},
+  {t:'„Odgovor hejteru klipom"',d:'Uzmi pravi ili izmišljen komentar, odgovori napretkom. Zlato za engagement.'},
+  {t:'„Jeftina kućna teretana u Srbiji"',d:'Pokaži trening sa minimalnom opremom. Relatable onima koji ne mogu skupu teretanu.'},
+  {t:'„3 vežbe za veće grudi"',d:'Kosa klupa, propadanja, razvodnici — kratki saveti za formu. Klasičan mamac za čuvanja.'},
+  {t:'„Isti gym fit, 6 meseci kasnije"',d:'Obuci identičnu opremu pre i sad. Vizuelni dokaz napretka, bez reči.'}
+],en:[
+  {t:'"1 year natural transformation"',d:'Old photo vs now side by side. Trending sound + text. #1 follow-driver for young lifters.'},
+  {t:'"POV: leg day"',d:'Funny relatable skit dreading/dominating leg day. Humor + gym = shareable.'},
+  {t:'"How to get a wider back (3 moves)"',d:'Quick demo with text cues. Value = saves = reach.'},
+  {t:'"Becoming David Laid — day in my life"',d:'Meal, training, sleep. Frame it as the journey to your idol\'s physique.'},
+  {t:'"Rate my physique (19, natural)"',d:'Posing in good light, ask for honest ratings. Comment-bait boost.'},
+  {t:'"What I eat in a day on a budget"',d:'Cheap high-protein meals. Relatable + useful.'},
+  {t:'"Nobody is coming to save you"',d:'Hard set + discipline quote + emotional sound. Motivation pillar.'},
+  {t:'"Beginner mistakes I made"',d:'List 3 things you\'d tell your past self.'},
+  {t:'"30-day natural progress"',d:'Weekly clips stitched. Show small but real change. Builds a series.'},
+  {t:'"Training when you don\'t feel like it"',d:'Cold/tired walk to the gym, then the pump. Discipline > motivation.'},
+  {t:'"Pump + posing routine"',d:'Last set, then poses in the mirror. Aesthetics, high saves & shares.'},
+  {t:'"Reply to a hater with a clip"',d:'Answer a comment with your progress. Engagement gold.'},
+  {t:'"Cheap home gym"',d:'Train with minimal equipment. Relatable.'},
+  {t:'"3 exercises for a bigger chest"',d:'Incline press, dips, flyes — quick cues. Save-magnet.'},
+  {t:'"Same gym fit, 6 months apart"',d:'Identical outfit then vs now. Visual proof, no words.'}
+]};
+
+const TRENDS={sr:[
+  ['Transformacija „reveal"','Stara slika → flex na beat drop. Koristi emotivan/hype zvuk koji je trending. Uvek radi za mlade liftere.'],
+  ['„Kako je počelo vs kako ide"','Dva klipa: nervozan početnik vs samouveren sad. Ide uz većinu trending zvukova.'],
+  ['Glow-up / „we go gym" montaže','Brza estetska montaža najboljih klipova uz hype pesmu. Mnogo deljenja.'],
+  ['Form check / „oceni ponavljanje"','Pokaži težak set, traži ocene. Mamac za komentare koji se stalno vraća.'],
+  ['„POV" skitovi iz teretane','POV: spoter, POV: dan za noge, POV: simpatija iz teretane. Dodaj pirotski štih.'],
+  ['Voiceover storytime preko treninga','Pričaj o svom putu/mindsetu dok treniraš u pozadini. Odlično za lični brend.'],
+  ['„Stvari koje prosto imaju smisla" liste','Brza tekst-lista preko klipova. Pogodno za čuvanje.'],
+  ['Dan u životu / „dođi da treniramo"','Vlog stil dok te prati u teretanu. Gradi povezanost = pratioci.']
+],en:[
+  ['Transformation reveal','Old photo → flex on the beat drop with a trending sound. Always works.'],
+  ['"How it started vs going"','Nervous beginner vs confident now. Fits most trending audios.'],
+  ['Glow-up / "we go gym" edits','Fast-cut aesthetic edit to a hyped song. High shares.'],
+  ['Form check / "rate the rep"','Heavy set, ask for ratings. Comment-bait that recycles.'],
+  ['"POV" gym skits','POV: spotter, leg day, gym crush. Add local flavor.'],
+  ['Voiceover storytime over training','Talk about your journey while training. Builds personal brand.'],
+  ['"Things that just make sense" lists','Quick text list over clips. Save-friendly.'],
+  ['Day-in-the-life / "come train"','Vlog style following you to the gym. Builds connection.']
+]};
+
+const TRFIND={sr:[
+  'Otvori TikTok pretragu → ukucaj <b>„teretana"</b>, <b>„fitness"</b>, <b>„prirodno"</b> i gledaj šta ove nedelje ima milione.',
+  'Dok skroluješ, ako <b>zvuk</b> ima ▶ strelicu / čuješ ga 3+ puta u gym videima — sačuvaj ga, iskoristi u 3–5 dana.',
+  'Zaprati David Laida, estetske strane i 5 balkanskih gym kreatora. Kopiraj <i>format</i>, ne osobu.',
+  'Tapni „Dodaj zvuk" → TikTok prikazuje trending zvukove sa ikonom strelice. Koristi te.'
+],en:[
+  'Search <b>"gym"</b>, <b>"fitness"</b>, <b>"natural"</b> and watch what\'s getting millions this week.',
+  'If a <b>sound</b> shows ▶ rising / you hear it 3+ times — save it, use within 3–5 days.',
+  'Follow David Laid + 5 Balkan gym creators. Copy the <i>format</i>, not the person.',
+  'Tap "Add sound" → TikTok shows trending audio with an arrow. Use those.'
+]};
+
+const TIMES={sr:[
+  ['Pon–Pet','7:00–8:00 (jutarnji skrol) · 14:00–16:00 (posle škole) · <b>19:00–22:00</b> (najbolje)'],
+  ['Sub–Ned','11:00–13:00 · 19:00–22:00']
+],en:[
+  ['Mon–Fri','7:00–8:00 · 14:00–16:00 · <b>19:00–22:00</b> (prime)'],
+  ['Sat–Sun','11:00–13:00 · 19:00–22:00']
+]};
+
+const STORIES={sr:[
+  ['•','<b>Iza scene:</b> šetnja do teretane, pre-workout, dosadan pravi grind.'],
+  ['•','<b>Ankete/pitanja:</b> „Guranje ili vučenje danas?", „Oceni formu" — odgovori dižu odnos sa publikom.'],
+  ['•','<b>Dnevna provera:</b> obrok, voda, raspoloženje — pokaži disciplinu, ne samo najbolje momente.'],
+  ['•','<b>Podeli svoj post</b> na storije da ga uhvati više pratilaca.']
+],en:[
+  ['•','<b>Behind the scenes:</b> walking to the gym, pre-workout, the real grind.'],
+  ['•','<b>Polls/questions:</b> "Push or pull?", "Rate my form" — replies boost your score.'],
+  ['•','<b>Daily check-in:</b> meal, water, mood — show discipline.'],
+  ['•','<b>Re-share your post</b> to story so more followers catch it.']
+]};
+
+const WEEK={sr:[
+  ['Pon','Transformacija / napredak','#transformacija #teretana #fyp'],
+  ['Uto','Saveti / 3 trika (vrednost)','#saveti #fitnes #vežbe'],
+  ['Sre','Motivacija + težak set','#motivacija #disciplina #davidlaid'],
+  ['Čet','Relatable / POV skit','#humor #pov #danzanoge'],
+  ['Pet','Estetika / poziranje pump','#fizik #estetika #pump'],
+  ['Sub','Dan u životu / vlog','#daninfo #gymlife #srbija'],
+  ['Ned','Odgovor na komentar / zajednica','#fyp #teretana #srbija']
+],en:[
+  ['Mon','Transformation / progress','#transformation #gymtok #fyp'],
+  ['Tue','How-to / 3 tips','#gymtips #fitness #howto'],
+  ['Wed','Motivation + hard set','#gymmotivation #discipline #davidlaid'],
+  ['Thu','Relatable / POV','#gymhumor #pov #legday'],
+  ['Fri','Aesthetics / posing','#physique #aesthetic #pump'],
+  ['Sat','Day in the life','#dayinmylife #gymlife #serbia'],
+  ['Sun','Reply / community','#fyp #gymtok #serbia']
+]};
+
+const PROF={sr:[
+  'Profilna: jasna, dobro osvetljena slika lica ili fizika (ne logo). Ljudi prate ljude.',
+  'Korisničko ime: jednostavno + „fit/gym" (npr. @veo.fit, @veo.gym). Lako za pamćenje i pretragu.',
+  'Bio red 1: ko si — „19 · prirodno · jurim fizik kao David Laid".',
+  'Bio red 2: odakle — „Pirot, Srbija 🇷🇸" (lokalci se povezuju, gradi poverenje).',
+  'Bio red 3: razlog da te zaprate — „prati put do 80kg shredded".',
+  'Zakači 3 najbolja videa na vrh (transformacija, vrednost, ličnost).',
+  'Drži isti izgled: isto svetlo/filter da grid izgleda kao brend.',
+  'Dodaj hook i u polje za ime — TikTok ga prikazuje u pretrazi.',
+  'Odgovaraj na komentare sa profila da posetioci vide da si aktivan.'
+],en:[
+  'Profile pic: clear, well-lit face/physique (not a logo). People follow people.',
+  'Username: simple + "fit/gym" (e.g. @veo.fit). Easy to remember & search.',
+  'Bio line 1: who you are — "19 · natural · chasing a David Laid physique".',
+  'Bio line 2: where — "Pirot, Serbia 🇷🇸". Locals connect, builds trust.',
+  'Bio line 3: a reason to follow — "follow the journey to 80kg shredded".',
+  'Pin your 3 best videos to the top.',
+  'Keep a consistent look so your grid feels like a brand.',
+  'Add a hook to your name field too — TikTok shows it in search.',
+  'Reply to comments from your profile so visitors see you\'re active.'
+]};
+
+const BIOS={sr:[
+  '19 · Prirodno 🇷🇸\nJurim fizik kao David Laid\nTeretana iz Pirota 📈\nNov video svaki dan 💪',
+  'Od mršavog do nabildovanog\n19 | Pirot, Srbija\nPrirodna transformacija\nZaprati grind ⬇️',
+  'Teretana je terapija 🧠\n19god prirodan lifter\nDavid Laid je cilj\nMotivacija + saveti svaki dan'
+],en:[
+  '19 · Natural 🇷🇸\nChasing a David Laid physique\nPirot gym journey 📈\nNew video daily 💪',
+  'From skinny to shredded\n19 | Pirot, Serbia\nNatural transformation\nFollow the grind ⬇️',
+  'Gym is therapy 🧠\n19yo natural lifter\nDavid Laid is the goal\nDaily motivation + tips'
+]};
+
+const PLANITEMS={sr:[
+  'Nedelja 1 — Setup: optimizuj profil, sliku, bio, korisničko ime. Izaberi svojih 5 stubova.',
+  'Nedelja 1 — Snimi „seriju" od 7 videa u jednom danu da nikad ne ostaneš bez sadržaja.',
+  'Nedelja 1 — Postavljaj 1 dnevno. Prati koji stil hooka drži pažnju.',
+  'Nedelja 1 — Zaprati David Laida + 5 balkanskih kreatora. Sačuvaj 10 formata za kopiranje.',
+  'Nedelja 2 — Postavljaj 1–2 dnevno. Dodaj trending zvuk svakom videu.',
+  'Nedelja 2 — Analiziraj svaki post ovde. Nađi svoj najbolji format.',
+  'Nedelja 2 — Počni 2–4 storija dnevno (iza scene, ankete, provere).',
+  'Nedelja 2 — Odgovori na SVAKI komentar u prvom satu.',
+  'Nedelja 3 — Napravi seriju/2. deo iz najboljeg videa.',
+  'Nedelja 3 — Testiraj vremena; zaključaj svoja 2 najbolja termina.',
+  'Nedelja 3 — Radi 1 trend dnevno sa svojim pečatom.',
+  'Nedelja 3 — Kolaboracija/duet sa lokalnim kreatorom ili drugom.',
+  'Nedelja 4 — Udvostruči samo formate koji rade. Izbaci ostalo.',
+  'Nedelja 4 — Postavi svoj najjači transformacioni video do sad.',
+  'Nedelja 4 — Pregledaj statistiku za 30 dana, postavi cilj za sledeći mesec (npr. +1000 pratilaca).'
+],en:[
+  'Week 1 — Setup: optimize profile, pic, bio, username. Pick your 5 pillars.',
+  'Week 1 — Batch-film 7 videos in one session.',
+  'Week 1 — Post 1/day. Study which hook holds attention.',
+  'Week 1 — Follow David Laid + 5 Balkan creators. Save 10 formats.',
+  'Week 2 — Post 1–2/day. Add a trending sound to every video.',
+  'Week 2 — Analyze every post here. Find your best format.',
+  'Week 2 — Start 2–4 stories/day.',
+  'Week 2 — Reply to EVERY comment within the first hour.',
+  'Week 3 — Make a Part 2 from your best video.',
+  'Week 3 — Test posting times; lock your 2 best slots.',
+  'Week 3 — Do 1 trend per day with your spin.',
+  'Week 3 — Collab/duet with a local creator.',
+  'Week 4 — Double down only on what worked.',
+  'Week 4 — Post your strongest transformation yet.',
+  'Week 4 — Review 30-day stats, set next month\'s goal.'
+]};
+
+const IOS={sr:[
+  'Otvori ovu stranicu u <b>Safariju</b> (ne u drugoj aplikaciji).',
+  'Tapni dugme <b>Podeli</b> (kvadratić sa strelicom na dnu).',
+  'Skroluj i izaberi <b>„Dodaj na početni ekran"</b>.',
+  'Tapni <b>Dodaj</b> — sada se otvara kao prava aplikacija, radi offline i pamti tvoje podatke.',
+  'Savet: koristi dugme <b>📋 Kopiraj</b> pa nalepi direktno u TikTok kad postavljaš video.'
+],en:[
+  'Open this page in <b>Safari</b> (not another app).',
+  'Tap the <b>Share</b> button (square with an arrow).',
+  'Scroll and choose <b>"Add to Home Screen"</b>.',
+  'Tap <b>Add</b> — now it opens like a real app, works offline, remembers your data.',
+  'Tip: use the <b>📋 Copy</b> buttons and paste straight into TikTok.'
+]};
+
+const SELOPTS={
+  watch:{sr:[['','ne znam'],['full','Gledali skoro sve'],['mid','Gledali otprilike pola'],['low','Otpali rano']],
+         en:[['','don\'t know'],['full','Watched most/all'],['mid','Watched ~half'],['low','Dropped early']]},
+  len:{sr:[['short','Ispod 15s'],['mid','15–35s'],['long','35s+']],
+       en:[['short','Under 15s'],['mid','15–35s'],['long','35s+']]},
+  type:{sr:[['transformation','Transformacija / napredak'],['aesthetic','Estetika / poziranje'],['motivation','Motivacija / mindset'],['howto','Saveti / kako da'],['relatable','Relatable / smešno']],
+        en:[['transformation','Transformation / progress'],['aesthetic','Aesthetics / posing'],['motivation','Motivation / mindset'],['howto','How-to / tips'],['relatable','Relatable / funny']]},
+  day:{sr:[['','— '],['mon','Ponedeljak'],['tue','Utorak'],['wed','Sreda'],['thu','Četvrtak'],['fri','Petak'],['sat','Subota'],['sun','Nedelja']],
+       en:[['','— '],['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday'],['sat','Saturday'],['sun','Sunday']]},
+  bucket:{sr:[['','— '],['morning','Jutro (6–10h)'],['midday','Podne (11–14h)'],['afternoon','Popodne (15–18h)'],['evening','Veče (19–22h)'],['night','Noć (23–5h)']],
+          en:[['','— '],['morning','Morning (6–10)'],['midday','Midday (11–14)'],['afternoon','Afternoon (15–18)'],['evening','Evening (19–22)'],['night','Night (23–5)']]}
+};
+const DAYNAMES={sr:{mon:'Ponedeljak',tue:'Utorak',wed:'Sreda',thu:'Četvrtak',fri:'Petak',sat:'Subota',sun:'Nedelja'},
+  en:{mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'}};
+const BUCKETNAMES={sr:{morning:'Jutro (6–10h)',midday:'Podne (11–14h)',afternoon:'Popodne (15–18h)',evening:'Veče (19–22h)',night:'Noć (23–5h)'},
+  en:{morning:'Morning (6–10)',midday:'Midday (11–14)',afternoon:'Afternoon (15–18)',evening:'Evening (19–22)',night:'Night (23–5)'}};
+
+/* ================= HASHTAGS ================= */
+const TAGS={
+  transformation:['#transformacija','#prirodno','#napredak','#bildovanje','#teretanasrbija'],
+  aesthetic:['#fizik','#estetika','#pump','#nabildovan','#mišići'],
+  motivation:['#motivacija','#disciplina','#davidlaid','#mindset','#trening'],
+  howto:['#saveti','#fitnesaveti','#vežbe','#trening','#formcheck'],
+  relatable:['#humor','#danzanoge','#gymhumor','#pov','#teretana'],
+  base:'#teretana',
+  fyp:'#fyp',
+  local:['#srbija','#pirot','#balkan','#teretanasrbija','#fitnesrbija','#beograd','#niš']
+};
+const TAGS_EN={
+  transformation:['#transformation','#naturalbodybuilding','#progress','#gymjourney','#beforeandafter'],
+  aesthetic:['#aesthetic','#physique','#shredded','#posing','#pump'],
+  motivation:['#gymmotivation','#discipline','#davidlaid','#mindset','#nevergiveup'],
+  howto:['#gymtips','#fitnesstips','#formcheck','#workout','#backday'],
+  relatable:['#gymhumor','#gymmemes','#legday','#pov','#gymlife'],
+  base:'#gymtok',fyp:'#fyp',
+  local:['#serbia','#srbija','#pirot','#balkan','#teretana']
+};
+function tagSet(){return L()==='en'?TAGS_EN:TAGS}
+function buildHashtags(type){
+  const t=tagSet();
+  const arr=dedupe([t.base,...sample(t[type],3),t.fyp,t.local[0]]).slice(0,6);
+  return arr;
+}
+
+/* ================= CAPTIONS ================= */
+const CAP={
+ transformation:{
+  sr:{h:['Ovako izgleda godinu dana prirodno 💪','Dan 1 vs sad — bez izgovora.','Počeo sam mršav i uplašen. Gledaj sad.'],
+      b:['Disciplina je jača od motivacije. Svaki dan, bez izuzetka.','Niko nije verovao, a ja sam i dalje ovde.','Male promene svaki dan postaju ovo posle godinu dana.'],
+      c:['Gde si ti počeo? 👇','Sačuvaj kao motivaciju za loš dan.']},
+  en:{h:['This is 1 year natural 💪','Day 1 vs now — no excuses.','Started skinny and scared. Watch now.'],
+      b:['Discipline beats motivation. Every day.','Nobody believed it, I\'m still here.','Small daily changes become this in a year.'],
+      c:['Where did you start? 👇','Save this for a bad day.']}},
+ aesthetic:{
+  sr:{h:['Pump posle leđa pogađa drugačije 🔥','Ocenite fizik 1-10 👇','Svetlo + kondicija = sve.'],
+      b:['Meseci rada za ovih nekoliko sekundi.','Prirodno, 19 godina, iz Pirota.','Najbolji set je uvek poslednji.'],
+      c:['Ocenite iskreno 1-10 👇','Sačuvaj za inspiraciju.']},
+  en:{h:['Post-back pump hits different 🔥','Rate the physique 1-10 👇','Lighting + conditioning = everything.'],
+      b:['Months of work for these few seconds.','Natural, 19, from Pirot.','The best set is always the last.'],
+      c:['Rate it honestly 1-10 👇','Save for inspiration.']}},
+ motivation:{
+  sr:{h:['Niko neće doći da te spasi.','Nisi lenj. Samo ti je previše udobno.','Boli sad ili boli zauvek. Biraj.'],
+      b:['Ustani i uradi ono što ti se ne radi. Tu se gradi karakter.','Teretana mi je vratila kontrolu nad životom.','David Laid je počeo mršav. I ja. Pitanje je ko će odustati.'],
+      c:['Sačuvaj za dan kad ti se ne ide 💪','Tag-uj nekog kome ovo danas treba.']},
+  en:{h:['Nobody is coming to save you.','You\'re not lazy. Just too comfortable.','Hurts now or hurts forever. Choose.'],
+      b:['Do what you don\'t feel like. That builds character.','The gym gave me control of my life back.','David Laid started skinny. So did I.'],
+      c:['Save for a day you don\'t feel like it 💪','Tag someone who needs this.']}},
+ howto:{
+  sr:{h:['3 vežbe koje su mi najviše pomogle za grudi.','Ovo niko ne kaže početnicima.','Radi ovo za šira leđa.'],
+      b:['Probaj 8-12 ponavljanja, fokus na formu, ne na kilažu.','Greška koju sam pravio godinu dana — ne ponavljaj je.','Sačuvaj ovo i ubaci u sledeći trening.'],
+      c:['Sačuvaj da ne zaboraviš 📌','Koju vežbu da objasnim sledeću? 👇']},
+  en:{h:['3 exercises that helped my chest most.','Nobody tells beginners this.','Do this for a wider back.'],
+      b:['Try 8-12 reps, focus on form not weight.','A mistake I made for a year — don\'t repeat it.','Save this and add it to your next session.'],
+      c:['Save so you don\'t forget 📌','Which exercise next? 👇']}},
+ relatable:{
+  sr:{h:['POV: dan za noge a ti jedva hodaš 😅','Teretana u Pirotu pogađa drugačije.','Svako ko trenira zna ovaj osećaj.'],
+      b:['Reci mi da nisam jedini 😂','Mali grad, velika volja.','Najbolji i najgori dan u nedelji u isto vreme.'],
+      c:['Tag-uj nekog ko ovo radi 😂','Da li je samo meni ovako? 👇']},
+  en:{h:['POV: leg day and you can barely walk 😅','The gym in a small town hits different.','Everyone who trains knows this feeling.'],
+      b:['Tell me I\'m not the only one 😂','Small town, big drive.','Best and worst day of the week at once.'],
+      c:['Tag someone who does this 😂','Is it just me? 👇']}}
+};
+let lastCaption='';
+function genCaption(){
+  const type=document.getElementById('capType').value;
+  const c=CAP[type][L()];
+  const hook=pick(c.h), body=pick(c.b), cta=pick(c.c);
+  const tags=buildHashtags(type).join(' ');
+  lastCaption=hook+'\n\n'+body+' '+cta+'\n\n'+tags;
+  document.getElementById('capResult').innerHTML=
+    `<div class="capout">
+       <div class="muted" style="font-size:11px;letter-spacing:.5px">${T.capHookLbl[L()]}</div>
+       <div style="font-weight:700;margin:3px 0 12px">${esc(hook)}</div>
+       <div class="muted" style="font-size:11px;letter-spacing:.5px">${T.capDescLbl[L()]}</div>
+       <div style="margin:3px 0 0">${esc(body)} ${esc(cta)}</div>
+       <div style="margin-top:8px;color:var(--accent2)">${esc(tags)}</div>
+     </div>
+     <button class="btn" onclick="copy(lastCaption)">${T.capCopy[L()]}</button>
+     <button class="btn alt" onclick="genCaption()">${T.capAgain[L()]}</button>`;
+}
+
+/* ================= NAV ================= */
+const TAB_ORDER=['home','analyze','caption','besttime','followers','library','ideas','tags','schedule','trends','profile','plan','help'];
+const TAB_ICON={home:'🏠',analyze:'🔬',caption:'✍️',besttime:'⏰',followers:'📈',library:'📁',ideas:'💡',tags:'#️⃣',schedule:'📅',trends:'🔥',profile:'👤',plan:'🚀',help:'📱'};
 function buildNav(){
-  const n=document.getElementById('nav');
-  // show a compact subset in the bar; all reachable
-  const bar=['home','analyze','ideas','tags','schedule','trends','profile'];
-  n.innerHTML=bar.map(id=>{
-    const t=TABS.find(x=>x[0]===id);
-    return `<button data-tab="${id}" onclick="go('${id}')"><span class="ic">${t[1]}</span>${t[2]}</button>`;
-  }).join('');
+  document.getElementById('nav').innerHTML=TAB_ORDER.map(id=>
+    `<button data-tab="${id}" onclick="go('${id}')"><span class="ic">${TAB_ICON[id]}</span>${T.nav[id][L()]}</button>`).join('');
+  const cur=document.querySelector('section.active');
+  if(cur)document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===cur.id));
 }
 function go(id){
   document.querySelectorAll('section').forEach(s=>s.classList.toggle('active',s.id===id));
@@ -333,353 +794,338 @@ function go(id){
   window.scrollTo(0,0);
   if(id==='library')renderLib();
   if(id==='plan')renderPlan();
+  if(id==='besttime')renderBestTime();
+  if(id==='followers')renderFollowers();
 }
 
-/* ---------------- ANALYSIS ENGINE ---------------- */
+/* ================= ANALYSIS ENGINE ================= */
 function analyze(){
-  const v={
-    title:val('aTitle')||'Untitled',
-    views:num('aViews'),likes:num('aLikes'),comments:num('aComments'),
-    shares:num('aShares'),saves:num('aSaves'),
-    watch:val('aWatch'),len:val('aLen'),ts:Date.now()
-  };
-  if(v.views<=0){toast('Enter the views first');return}
-  const r=diagnose(v);
-  v.diag=r;
+  const v={title:val('aTitle')||'Untitled',views:num('aViews'),likes:num('aLikes'),comments:num('aComments'),
+    shares:num('aShares'),saves:num('aSaves'),watch:val('aWatch'),len:val('aLen'),
+    day:val('aDay'),bucket:val('aBucket'),ts:Date.now()};
+  if(v.views<=0){toast(T.enterViews[L()]);return}
+  v.diag=diagnose(v);
   state.videos.unshift(v);save();updateHome();
-  document.getElementById('aResult').innerHTML=renderDiag(v,r);
-  // clear
+  document.getElementById('aResult').innerHTML=renderDiag(v,v.diag);
   ['aTitle','aViews','aLikes','aComments','aShares','aSaves'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('aResult').scrollIntoView({behavior:'smooth'});
 }
-
 function diagnose(v){
-  const eng=(v.likes+v.comments+v.shares)/v.views; // engagement rate
+  const eng=(v.likes+v.comments+v.shares)/v.views;
   const likeR=v.likes/v.views, comR=v.comments/v.views, shR=v.shares/v.views;
   const saveR=v.saves>0?v.saves/v.views:null;
-  let grade, color, headline, why=[], fixes=[];
+  const lang=L();
+  let grade,color,headline,why=[],fixes=[];
+  const engGood=eng>=0.08, engOk=eng>=0.04;
+  const avgViews=accountAvgViews();
+  const reachGood=v.views>=avgViews*1.5, reachLow=v.views<avgViews*0.6||v.views<300;
+  const S=DIAGTXT[lang];
 
-  // ENGAGEMENT QUALITY (do people who watch, react?)
-  // benchmarks for fitness: ER >8% great, 4-8% solid, <4% weak
-  const engGood = eng>=0.08, engOk = eng>=0.04;
+  if(engGood&&reachLow){grade=S.g_gem;color='warn';headline=S.h_gem;
+    why.push(S.w_gem1.replace('{e}',pct(eng)));why.push(S.w_gem2);
+    fixes.push(S.f_gem1,S.f_gem2,S.f_gem3);}
+  else if(engGood&&reachGood){grade=S.g_win;color='good';headline=S.h_win;
+    why.push(S.w_win1.replace('{e}',pct(eng)));
+    if(shR>=0.01)why.push(S.w_win2.replace('{s}',pct(shR)));
+    fixes.push(S.f_win1,S.f_win2);}
+  else if(!engOk&&reachGood){grade=S.g_shal;color='warn';headline=S.h_shal;
+    why.push(S.w_shal1.replace('{e}',pct(eng)));why.push(S.w_shal2);
+    fixes.push(S.f_shal1,S.f_shal2,S.f_shal3);}
+  else if(reachLow&&!engOk){grade=S.g_work;color='bad';headline=S.h_work;
+    why.push(S.w_work1);why.push(S.w_work2);
+    fixes.push(S.f_work1,S.f_work2,S.f_work3);}
+  else{grade=S.g_solid;color='good';headline=S.h_solid;
+    why.push(S.w_solid.replace('{e}',pct(eng)));fixes.push(S.f_solid);}
 
-  // REACH (did the algorithm push it?) — relative to this account
-  const avgViews = accountAvgViews();
-  const reachGood = v.views >= avgViews*1.5;
-  const reachLow  = v.views < avgViews*0.6 || v.views<300;
+  if(v.watch==='low'){why.push(S.w_watchlow);fixes.unshift(S.f_watchlow);}
+  else if(v.watch==='full'){why.push(S.w_watchfull);}
+  if(v.len==='long'&&reachLow)fixes.push(S.f_long);
+  if(comR<0.003&&v.views>500)fixes.push(S.f_comm);
+  if(saveR!==null&&saveR>=0.02)why.push(S.w_save.replace('{s}',pct(saveR)));
 
-  // ---- SCENARIOS ----
-  if(engGood && reachLow){
-    grade='HIDDEN GEM';color='warn';
-    headline="Great content, weak reach. The few people who saw it LOVED it — TikTok just didn't push it far.";
-    why.push("Engagement rate is high ("+pct(eng)+") — your idea/content is strong.");
-    why.push("Views are below your average, so the algorithm didn't expand it. That's almost always the <b>hook</b> (first 1–2s) or <b>watch time</b>, not the topic.");
-    fixes.push("Re-post the SAME idea with a harder hook in the first second.");
-    fixes.push("Cut the intro — start mid-action (the rep, the reveal).");
-    fixes.push("Try a trending sound so it rides an existing wave.");
-  } else if(engGood && reachGood){
-    grade='WINNER';color='good';
-    headline="This is your formula. Make more like this.";
-    why.push("High engagement ("+pct(eng)+") AND strong reach — the algorithm and people both approved.");
-    if(shR>=0.01) why.push("Strong shares ("+pct(shR)+") — shares are the #1 viral signal. People sent this to friends.");
-    fixes.push("Make a PART 2 / series from this exact topic.");
-    fixes.push("Note the hook, sound, length, time you posted — repeat that recipe.");
-  } else if(!engOk && reachGood){
-    grade='SHALLOW VIEWS';color='warn';
-    headline="Lots of views but they scrolled past without caring. Looks good, no substance/payoff.";
-    why.push("Views are fine but engagement is low ("+pct(eng)+"). People watched a bit then left without liking.");
-    why.push("Usually means: no payoff/ending, no reason to like, or the hook over-promised.");
-    fixes.push("Add a clear ending or 'wait for it' payoff so people react.");
-    fixes.push("Put a question/opinion in the caption to trigger comments.");
-    fixes.push("Add a text overlay with a relatable line they'll want to share.");
-  } else if(reachLow && !engOk){
-    grade='NEEDS WORK';color='bad';
-    headline="Low reach and low engagement — most likely the first 2 seconds and watch time.";
-    why.push("Few views + few reactions = the video got tested on a small batch and TikTok stopped pushing it.");
-    why.push("90% of the time the cause is the HOOK (slow start) or LENGTH (too long, people dropped).");
-    fixes.push("Rewrite the first 1 second: show the result/peak first, then explain.");
-    fixes.push("Keep it 15–25s while you're small — easier to get full watches & rewatches.");
-    fixes.push("Use better lighting/framing so it looks scroll-worthy in the feed.");
-  } else {
-    grade='SOLID';color='good';
-    headline="Decent video. Small tweaks can push it further.";
-    why.push("Engagement "+pct(eng)+", reach around your average. Nothing broken, just not breakout.");
-    fixes.push("Sharper hook + a trending sound is usually the difference between this and a viral one.");
-  }
-
-  // WATCH-TIME signal override
-  if(v.watch==='low'){
-    why.push("⚠️ You said people dropped early — that's the single biggest reason for low reach. Fix the first 2 seconds before anything else.");
-    fixes.unshift("Front-load the best moment in second 1. Delete any slow intro.");
-  } else if(v.watch==='full'){
-    why.push("✅ People watched most of it — watch time is your friend. Lean into reach (hook + sound + posting time).");
-  }
-  if(v.len==='long' && reachLow){
-    fixes.push("It's long — trim to under 25s. Short videos loop and rack up watch time faster when small.");
-  }
-  // COMMENT / SHARE specifics
-  if(comR<0.003 && v.views>500) fixes.push("Almost no comments — end with a question or a hot take to spark replies.");
-  if(saveR!==null && saveR>=0.02) why.push("High save rate ("+pct(saveR)+") — people saved it as useful. Make more 'how-to / value' content like this.");
-
-  return {eng,likeR,comR,shR,saveR,grade,color,headline,why,fixes,
-    bars:[
-      ['Engagement', Math.min(eng/0.10,1), eng>=0.08?'good':eng>=0.04?'warn':'bad'],
-      ['Likes',      Math.min(likeR/0.08,1), likeR>=0.05?'good':likeR>=0.02?'warn':'bad'],
-      ['Comments',   Math.min(comR/0.01,1), comR>=0.006?'good':comR>=0.002?'warn':'bad'],
-      ['Shares (viral)', Math.min(shR/0.015,1), shR>=0.008?'good':shR>=0.002?'warn':'bad'],
-    ]};
-}
-function accountAvgViews(){
-  const vs=state.videos.map(v=>v.views).filter(n=>n>0);
-  if(!vs.length)return 800; // assume small account default
-  return vs.reduce((a,b)=>a+b,0)/vs.length;
-}
-function renderDiag(v,r){
   const cmap={good:'var(--good)',warn:'var(--warn)',bad:'var(--bad)'};
-  return `<div class="card">
-    <span class="pill ${r.color}">${r.grade}</span>
-    <h3 style="margin:10px 0 6px">${esc(v.title)}</h3>
-    <p style="margin:0 0 4px">${r.headline}</p>
-    <div class="stats muted">${fmt(v.views)} views · ${fmt(v.likes)} likes · ${fmt(v.comments)} comments · ${fmt(v.shares)} shares</div>
-    <div style="margin:14px 0">
-      ${r.bars.map(b=>`<div style="font-size:12px;color:var(--muted);display:flex;justify-content:space-between"><span>${b[0]}</span></div>
-        <div class="meter"><i style="width:${Math.round(b[1]*100)}%;background:${cmap[b[2]]}"></i></div>`).join('')}
-    </div>
-    <h3>Why it performed this way</h3>
-    <ul class="clean">${r.why.map(w=>`<li><span class="n">•</span><span>${w}</span></li>`).join('')}</ul>
-    <h3>Fix it next time</h3>
-    <ul class="clean">${r.fixes.map((f,i)=>`<li><span class="n">${i+1}</span><span>${f}</span></li>`).join('')}</ul>
-  </div>`;
+  return {eng,likeR,comR,shR,saveR,grade,color,headline,why,fixes,
+    bars:[[S.barEng,Math.min(eng/0.10,1),eng>=0.08?'good':eng>=0.04?'warn':'bad'],
+      [S.barLike,Math.min(likeR/0.08,1),likeR>=0.05?'good':likeR>=0.02?'warn':'bad'],
+      [S.barComm,Math.min(comR/0.01,1),comR>=0.006?'good':comR>=0.002?'warn':'bad'],
+      [S.barShare,Math.min(shR/0.015,1),shR>=0.008?'good':shR>=0.002?'warn':'bad']]};
+}
+const DIAGTXT={
+ sr:{whyH:'Zašto je ovako prošao',fixH:'Popravi sledeći put',
+  g_gem:'SKRIVENI BISER',h_gem:'Sjajan sadržaj, slab doseg. Malobrojni koji su videli — obožavali su ga, TikTok ga samo nije progurao.',
+  w_gem1:'Engagement je visok ({e}) — ideja/sadržaj su jaki.',w_gem2:'Pregledi su ispod proseka, algoritam nije proširio. To je skoro uvek <b>hook</b> (prve 1–2s) ili <b>watch time</b>, ne tema.',
+  f_gem1:'Ponovo postavi ISTU ideju sa jačim hookom u prvoj sekundi.',f_gem2:'Iseci uvod — počni usred akcije (ponavljanje, reveal).',f_gem3:'Probaj trending zvuk da uhvati postojeći talas.',
+  g_win:'POBEDNIK',h_win:'Ovo je tvoja formula. Pravi još ovakvih.',
+  w_win1:'Visok engagement ({e}) I jak doseg — i algoritam i ljudi su odobrili.',w_win2:'Jaka deljenja ({s}) — deljenja su #1 viralni signal. Ljudi su slali drugarima.',
+  f_win1:'Napravi 2. DEO / seriju iz iste teme.',f_win2:'Zapamti hook, zvuk, dužinu, vreme objave — ponovi recept.',
+  g_shal:'PLITKI PREGLEDI',h_shal:'Mnogo pregleda ali su proskrolovali bez emocije. Izgleda dobro, nema poente.',
+  w_shal1:'Pregledi su ok ali engagement nizak ({e}). Gledali malo pa otišli bez lajka.',w_shal2:'Obično znači: nema poente/kraja, nema razloga za lajk, ili je hook previše obećao.',
+  f_shal1:'Dodaj jasan kraj ili „čekaj kraj" poentu da ljudi reaguju.',f_shal2:'Stavi pitanje/stav u opis da pokreneš komentare.',f_shal3:'Dodaj tekst preko sa relatable linijom koju će deliti.',
+  g_work:'TREBA RADA',h_work:'Nizak doseg i nizak engagement — najverovatnije prve 2 sekunde i watch time.',
+  w_work1:'Malo pregleda + malo reakcija = video je testiran na maloj grupi i TikTok je stao.',w_work2:'90% slučajeva uzrok je HOOK (spor početak) ili DUŽINA (predugo, ljudi otpali).',
+  f_work1:'Prepravi prvu sekundu: prvo pokaži rezultat/vrhunac, pa objasni.',f_work2:'Drži 15–25s dok si mali — lakše za pune preglede i ponovna gledanja.',f_work3:'Bolje svetlo/kadar da izgleda vredno skrola u feedu.',
+  g_solid:'SOLIDNO',h_solid:'Pristojan video. Male izmene mogu da ga gurnu dalje.',
+  w_solid:'Engagement {e}, doseg oko proseka. Ništa pokvareno, samo nije proboj.',f_solid:'Oštriji hook + trending zvuk su obično razlika do viralnog.',
+  w_watchlow:'⚠️ Rekao si da su otpali rano — to je najveći razlog niskog dosega. Popravi prve 2 sekunde pre svega.',f_watchlow:'Stavi najbolji momenat u 1. sekundu. Obriši spor uvod.',
+  w_watchfull:'✅ Gledali su skoro sve — watch time ti je saveznik. Fokus na doseg (hook + zvuk + vreme objave).',
+  f_long:'Predugo je — skrati ispod 25s. Kratki videi se vrte i brže skupljaju watch time.',f_comm:'Skoro nema komentara — završi pitanjem ili oštrim stavom.',
+  w_save:'Visoka stopa čuvanja ({s}) — ljudi su sačuvali kao korisno. Pravi još „kako da / vrednost" sadržaja.',
+  barEng:'Engagement',barLike:'Lajkovi',barComm:'Komentari',barShare:'Deljenja (viralno)'},
+ en:{whyH:'Why it performed this way',fixH:'Fix it next time',
+  g_gem:'HIDDEN GEM',h_gem:'Great content, weak reach. The few who saw it loved it — TikTok just didn\'t push it.',
+  w_gem1:'Engagement is high ({e}) — your content is strong.',w_gem2:'Views are below average, so the algorithm didn\'t expand it. Almost always the <b>hook</b> or <b>watch time</b>, not the topic.',
+  f_gem1:'Re-post the SAME idea with a harder hook in second 1.',f_gem2:'Cut the intro — start mid-action.',f_gem3:'Use a trending sound to ride a wave.',
+  g_win:'WINNER',h_win:'This is your formula. Make more like this.',
+  w_win1:'High engagement ({e}) AND strong reach — both approved.',w_win2:'Strong shares ({s}) — the #1 viral signal.',
+  f_win1:'Make a PART 2 / series from this topic.',f_win2:'Note the hook, sound, length, time — repeat the recipe.',
+  g_shal:'SHALLOW VIEWS',h_shal:'Lots of views but they scrolled past. Looks good, no payoff.',
+  w_shal1:'Views fine but engagement low ({e}). Watched a bit then left.',w_shal2:'Usually: no payoff/ending, no reason to like, or the hook over-promised.',
+  f_shal1:'Add a clear ending or "wait for it" payoff.',f_shal2:'Put a question/opinion in the caption.',f_shal3:'Add a relatable text overlay they\'ll share.',
+  g_work:'NEEDS WORK',h_work:'Low reach and low engagement — most likely the first 2 seconds + watch time.',
+  w_work1:'Few views + few reactions = tested on a small batch and stopped.',w_work2:'90% of the time it\'s the HOOK or LENGTH.',
+  f_work1:'Rewrite second 1: show the result first, then explain.',f_work2:'Keep it 15–25s while small.',f_work3:'Better lighting/framing so it looks scroll-worthy.',
+  g_solid:'SOLID',h_solid:'Decent video. Small tweaks can push it further.',
+  w_solid:'Engagement {e}, reach near average. Not broken, just not breakout.',f_solid:'Sharper hook + trending sound is usually the difference.',
+  w_watchlow:'⚠️ People dropped early — the biggest reason for low reach. Fix the first 2 seconds.',f_watchlow:'Front-load the best moment in second 1.',
+  w_watchfull:'✅ People watched most — watch time is your friend. Push reach.',
+  f_long:'It\'s long — trim under 25s.',f_comm:'Almost no comments — end with a question or hot take.',
+  w_save:'High save rate ({s}) — make more value/how-to content.',
+  barEng:'Engagement',barLike:'Likes',barComm:'Comments',barShare:'Shares (viral)'}
+};
+function accountAvgViews(){const vs=state.videos.map(v=>v.views).filter(n=>n>0);return vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:800}
+function renderDiag(v,r){
+  const cmap={good:'var(--good)',warn:'var(--warn)',bad:'var(--bad)'};const S=DIAGTXT[L()];
+  return `<div class="card"><span class="pill ${r.color}">${r.grade}</span>
+    <h3 style="margin:10px 0 6px">${esc(v.title)}</h3><p style="margin:0 0 4px">${r.headline}</p>
+    <div class="stats muted">${fmt(v.views)} · ${fmt(v.likes)} ♥ · ${fmt(v.comments)} 💬 · ${fmt(v.shares)} ↗</div>
+    <div style="margin:14px 0">${r.bars.map(b=>`<div style="font-size:12px;color:var(--muted)">${b[0]}</div><div class="meter"><i style="width:${Math.round(b[1]*100)}%;background:${cmap[b[2]]}"></i></div>`).join('')}</div>
+    <h3>${S.whyH}</h3><ul class="clean">${r.why.map(w=>`<li><span class="n">•</span><span>${w}</span></li>`).join('')}</ul>
+    <h3>${S.fixH}</h3><ul class="clean">${r.fixes.map((f,i)=>`<li><span class="n">${i+1}</span><span>${f}</span></li>`).join('')}</ul></div>`;
 }
 
-/* ---------------- LIBRARY ---------------- */
+/* ================= LIBRARY ================= */
 function renderLib(){
   const el=document.getElementById('libList');
-  if(!state.videos.length){el.innerHTML='<div class="empty">No videos yet.<br/>Go to <b>Analyze</b> and add your first one.</div>';return}
+  if(!state.videos.length){el.innerHTML=`<div class="empty">${T.libEmpty[L()]}</div>`;return}
   el.innerHTML='<div class="card">'+state.videos.map((v,i)=>{
     const r=v.diag||diagnose(v);
     return `<div class="vid" style="border-color:${({good:'var(--good)',warn:'var(--warn)',bad:'var(--bad)'})[r.color]}">
       <h4>${esc(v.title)} <span class="pill ${r.color}" style="margin-left:4px">${r.grade}</span></h4>
-      <div class="stats">${fmt(v.views)} views · ${fmt(v.likes)} likes · ${fmt(v.comments)} comm · ${fmt(v.shares)} shares · ER ${pct(r.eng)}</div>
-      <div class="diag"><b>Top fix:</b> ${r.fixes[0]} <a style="float:right" onclick="delVid(${i})">✕</a></div>
-    </div>`;
+      <div class="stats">${fmt(v.views)} · ${fmt(v.likes)} ♥ · ${fmt(v.comments)} 💬 · ${fmt(v.shares)} ↗ · ER ${pct(r.eng)}</div>
+      <div class="diag"><b>${T.topFix[L()]}</b> ${r.fixes[0]} <a style="float:right" onclick="delVid(${i})">✕</a></div></div>`;
   }).join('')+'</div>';
 }
-function delVid(i){state.videos.splice(i,1);save();renderLib();updateHome();toast('Deleted')}
+function delVid(i){state.videos.splice(i,1);save();renderLib();updateHome();toast(T.deleted[L()])}
 
-/* ---------------- IDEAS ---------------- */
-const IDEAS=[
-  {t:"\"1 year natural transformation\"",d:"Side-by-side of an old photo and now. Trending sound + text: 'started at 60kg, scared of the gym'. Transformation videos are the #1 follow-driver for young lifters."},
-  {t:"\"POV: leg day in Pirot\"",d:"Funny relatable skit of you dreading/dominating leg day. Local + humor + gym = very shareable."},
-  {t:"\"How to get a wider back (3 moves)\"",d:"Quick demo of lat pulldown, row, pull-up with text cues. Value content = saves = reach."},
-  {t:"\"Becoming David Laid — day in my life\"",d:"Morning to night: meal, training, sleep. Frame it as the journey to your idol's physique. People follow arcs."},
-  {t:"\"Rate my physique (19, natural)\"",d:"Posing in good light, ask for honest rating in comments. Comment-bait = algorithm boost."},
-  {t:"\"What I eat in a day on a student budget\"",d:"Cheap high-protein meals in Serbia. Relatable + useful, huge for your audience."},
-  {t:"\"Nobody is coming to save you\"",d:"Hard set + David-Laid-style discipline quote overlay + emotional sound. Motivation pillar."},
-  {t:"\"Gym mistakes I made as a beginner\"",d:"List 3 things you'd tell your past self. Beginners are your biggest audience — speak to them."},
-  {t:"\"30-day natural progress\"",d:"Weekly clips stitched together. Show small but real change. Builds a series people return for."},
-  {t:"\"Training when you don't feel like it\"",d:"Film the cold/tired walk to the gym, then the pump. Discipline > motivation message."},
-  {t:"\"Pump + posing routine\"",d:"Last set, then hit poses in the mirror. Pure aesthetics pillar, high saves & shares."},
-  {t:"\"Reply to a hater with a clip\"",d:"Use a real or made-up comment, answer it with your progress. Engagement gold."},
-  {t:"\"Cheap home gym in Serbia\"",d:"Show training with minimal equipment. Relatable to people who can't afford fancy gyms."},
-  {t:"\"3 exercises for a bigger chest\"",d:"Incline press, dips, flyes — quick form cues. Classic save-magnet how-to."},
-  {t:"\"Same gym fit, 6 months apart\"",d:"Wear the identical outfit then vs now. Visual proof of progress, no words needed."}
-];
-function rollIdea(){
-  const i=IDEAS[Math.floor(Math.random()*IDEAS.length)];
-  document.getElementById('ideaBox').innerHTML=
-    `<div class="card2" style="background:var(--card2);border-radius:12px;padding:14px">
-      <h3 style="margin:0 0 6px;color:var(--accent)">${i.t}</h3>
-      <p style="margin:0;font-size:14px">${i.d}</p>
-    </div>`;
-}
-const HOOKS=[
-  "Stop scrolling if you're skinny and want to grow.",
-  "This is what 1 year natural looks like.",
-  "Nobody told me this when I started lifting.",
-  "POV: you finally got addicted to the gym.",
-  "I'm 19 and chasing a David Laid physique — day 1 vs now.",
-  "You're not lazy. You're just comfortable. Watch this.",
-  "Do this every back day for a wider frame.",
-  "Rate my physique honestly in the comments.",
-  "Everyone skips this and stays small.",
-  "If you train in a small town, this is for you.",
-  "3 things I'd tell my first-day-in-the-gym self.",
-  "Watch till the end for the result."
-];
-function renderHooks(){
-  document.getElementById('hookBox').innerHTML=HOOKS.map(h=>`<span class="chip" onclick="copy('${esc(h).replace(/'/g,"\\'")}')">${esc(h)}</span>`).join('');
-}
+/* ================= RENDERERS ================= */
+function rollIdea(){const i=pick(tr(IDEAS));document.getElementById('ideaBox').innerHTML=
+  `<div style="background:var(--card2);border-radius:12px;padding:14px"><h3 style="margin:0 0 6px;color:var(--accent)">${esc(i.t)}</h3><p style="margin:0;font-size:14px">${esc(i.d)}</p></div>`;}
+function renderHooks(){document.getElementById('hookBox').innerHTML=tr(HOOKS).map(h=>`<span class="chip" onclick='copy(${JSON.stringify(h)})'>${esc(h)}</span>`).join('');}
+function renderPillars(){document.getElementById('pillarBox').innerHTML=tr(PILLARS).map(p=>`<details><summary>${esc(p[0])}</summary><div class="body">${p[1]}</div></details>`).join('');}
+function renderTrends(){document.getElementById('trendBox').innerHTML=tr(TRENDS).map(t=>`<details><summary>${esc(t[0])}</summary><div class="body">${esc(t[1])}</div></details>`).join('');
+  document.getElementById('trFind').innerHTML=tr(TRFIND).map((x,i)=>`<li><span class="n">${i+1}</span><span>${x}</span></li>`).join('');}
+function renderTimes(){document.getElementById('timeList').innerHTML=tr(TIMES).map(t=>`<li><span class="day">${t[0]}</span><span>${t[1]}</span></li>`).join('');}
+function renderStories(){document.getElementById('storyList').innerHTML=tr(STORIES).map(s=>`<li><span class="n">${s[0]}</span><span>${s[1]}</span></li>`).join('');}
+function renderWeek(){document.getElementById('weekTemplate').innerHTML=tr(WEEK).map(w=>`<li><span class="day">${w[0]}</span><span>${w[1]}<br/><span class="muted">${w[2]}</span></span></li>`).join('');}
+function renderProf(){document.getElementById('profChecks').innerHTML=tr(PROF).map((p,i)=>{const d=!!state.checks['prof'+i];return `<label class="check ${d?'done':''}"><input type="checkbox" ${d?'checked':''} onchange="toggleCheck('prof${i}',this)"><span>${esc(p)}</span></label>`;}).join('');}
+function renderBios(){document.getElementById('bioBox').innerHTML=tr(BIOS).map(b=>`<div style="background:var(--card2);border-radius:12px;padding:12px;margin-bottom:10px;white-space:pre-line;font-size:14px">${esc(b)}<br/><button class="chip" style="margin-top:8px" onclick='copy(${JSON.stringify(b)})'>📋</button></div>`).join('');}
+function renderPlan(){document.getElementById('planChecks').innerHTML=tr(PLANITEMS).map((p,i)=>{const d=!!state.plan['p'+i];return `<label class="check ${d?'done':''}"><input type="checkbox" ${d?'checked':''} onchange="togglePlan('p${i}',this)"><span>${esc(p)}</span></label>`;}).join('');}
+function renderQuick(){document.getElementById('quickWins').innerHTML=tr(QUICK).map((x,i)=>`<li><span class="n">${i+1}</span><span>${x}</span></li>`).join('');}
+function renderIOS(){document.getElementById('iosSteps').innerHTML=tr(IOS).map((x,i)=>`<li><span class="n">${i+1}</span><span>${x}</span></li>`).join('');
+  document.getElementById('capTip').innerHTML='<b>iPhone:</b> '+ (L()==='sr'?'tapni „📋 Kopiraj ceo opis", otvori TikTok, drži prst u polju za opis i tapni „Nalepi". Hook ide kao tekst preko videa u editoru.':'tap "📋 Copy whole caption", open TikTok, long-press the caption field and tap Paste. The hook goes as on-screen text in the editor.');}
 
-/* ---------------- HASHTAGS ---------------- */
-const TAGS={
-  base:['#gym','#gymtok','#fitness','#fyp','#foryou'],
-  transformation:['#transformation','#bodytransformation','#naturalbodybuilding','#progress','#gymjourney','#beforeandafter'],
-  aesthetic:['#aesthetic','#physique','#shredded','#gymaesthetics','#posing','#pump'],
-  motivation:['#motivation','#gymmotivation','#discipline','#mindset','#davidlaid','#nevergiveup'],
-  howto:['#gymtips','#fitnesstips','#howto','#formcheck','#workout','#backday'],
-  relatable:['#gymhumor','#gymmemes','#legday','#relatable','#gymlife','#pov'],
-  local:['#serbia','#srbija','#pirot','#balkan','#teretana','#fitnesssrbija']
-};
 function buildTags(){
   const type=document.getElementById('tagType').value;
-  // best practice: 1 broad + 3 niche + 1 local = 5
-  const pick=[ 'gymtok', ...sample(TAGS[type],3).map(s=>s.slice(1)), 'serbia' ];
-  const set=['#'+'gymtok', ...sample(TAGS[type],3), '#fyp', '#srbija'];
-  const final=dedupe(['#gymtok',...sample(TAGS[type],3),'#fyp']).slice(0,4).concat(['#srbija']);
-  document.getElementById('tagOut').innerHTML=final.map(t=>`<span class="hash" onclick="copy('${t}')">${t}</span>`).join('');
-  document.getElementById('tagOut').dataset.set=final.join(' ');
-  document.getElementById('localTags').innerHTML=TAGS.local.map(t=>`<span class="hash" onclick="copy('${t}')">${t}</span>`).join('');
+  const final=buildHashtags(type);
+  const out=document.getElementById('tagOut');
+  out.innerHTML=final.map(t=>`<span class="hash" onclick='copy(${JSON.stringify(t)})'>${esc(t)}</span>`).join('');
+  out.dataset.set=final.join(' ');
+  document.getElementById('localTags').innerHTML=tagSet().local.map(t=>`<span class="hash" onclick='copy(${JSON.stringify(t)})'>${esc(t)}</span>`).join('');
 }
-function copyTags(){const s=document.getElementById('tagOut').dataset.set||'';copy(s)}
+function copyTags(){copy(document.getElementById('tagOut').dataset.set||'')}
 
-/* ---------------- TRENDS ---------------- */
-const TRENDS=[
-  ["Transformation reveal","Old photo → flex to the beat drop. Use whatever emotional/hype sound is trending. Evergreen, always works for young lifters."],
-  ["\"How it started vs how it's going\"","Two clips: nervous beginner vs confident now. Pairs with most trending audios."],
-  ["Glow-up / 'we go gym' edits","Fast-cut aesthetic edit of your best clips to a hyped song. High shares."],
-  ["Form check / 'rate the rep'","Show a heavy set, ask for ratings. Comment-bait trend that recycles constantly."],
-  ["\"POV\" gym skits","POV: spotter, POV: leg day, POV: the gym crush. Add local Pirot flavor for relatability."],
-  ["Voiceover storytime over a workout","Talk about your journey/mindset while training in the background. Huge for building a personal brand."],
-  ["\"Things that just make sense\" lists","Quick text list over clips (e.g. natural lifter edition). Save-friendly."],
-  ["Day-in-the-life / 'come train with me'","Vlog-style following you to the gym. Builds parasocial connection = followers."]
-];
-function renderTrends(){
-  document.getElementById('trendBox').innerHTML=TRENDS.map(t=>
-    `<details><summary>${t[0]}</summary><div class="body">${t[1]}</div></details>`).join('');
-}
-
-/* ---------------- PROFILE ---------------- */
-const PROF=[
-  "Profile pic: a clear, well-lit shot of your face or physique (not a logo). People follow people.",
-  "Username: simple + 'fit/gym' so it's obvious (e.g. @veo.fit, @veo.gym). Easy to remember & search.",
-  "Bio line 1: who you are — '19 · natural · chasing a David Laid physique'.",
-  "Bio line 2: where — 'Pirot, Serbia 🇷🇸' (locals connect, builds trust).",
-  "Bio line 3: a reason to follow — 'follow the journey to 80kg shredded'.",
-  "Pin your 3 best videos to the top (transformation, value, personality).",
-  "Keep a consistent look: same lighting/filter so your grid feels like a brand.",
-  "Add a hook to your name field too — TikTok shows it in search.",
-  "Reply to comments from your profile so visitors see you're active."
-];
-function renderProf(){
-  const el=document.getElementById('profChecks');
-  el.innerHTML=PROF.map((p,i)=>{
-    const done=!!state.checks['prof'+i];
-    return `<label class="check ${done?'done':''}"><input type="checkbox" ${done?'checked':''} onchange="toggleCheck('prof${i}',this)"><span>${p}</span></label>`;
-  }).join('');
-}
-const BIOS=[
-  "19 · Natural 🇷🇸\nChasing a David Laid physique\nPirot gym journey 📈\nNew video daily 💪",
-  "From skinny to shredded\n19 | Pirot, Serbia\nNatural transformation\nFollow the grind ⬇️",
-  "Gym is therapy 🧠\n19yo natural lifter\nDavid Laid is the goal\nDaily motivation + tips"
-];
-function renderBios(){
-  document.getElementById('bioBox').innerHTML=BIOS.map(b=>
-    `<div class="card2" style="background:var(--card2);border-radius:12px;padding:12px;margin-bottom:10px;white-space:pre-line;font-size:14px">${esc(b)}
-      <button class="chip" style="margin-top:8px" onclick="copy(\`${b}\`)">📋 Copy</button></div>`).join('');
-}
-function saveProfile(){state.name=val('setName');save();updateHome();toast('Saved')}
-
-/* ---------------- WEEK TEMPLATE / FOCUS ---------------- */
-const WEEK=[
-  ['Mon','Transformation / progress clip','#transformation #gymtok #fyp'],
-  ['Tue','How-to / 3 tips (value)','#gymtips #fitness #howto'],
-  ['Wed','Motivation + hard set','#gymmotivation #discipline #davidlaid'],
-  ['Thu','Relatable / POV skit','#gymhumor #pov #legday'],
-  ['Fri','Aesthetics / posing pump','#physique #aesthetic #pump'],
-  ['Sat','Day-in-the-life / vlog','#dayinmylife #gymlife #srbija'],
-  ['Sun','Reply-to-comment / community','#fyp #gymtok #serbia']
-];
-function renderWeek(){
-  document.getElementById('weekTemplate').innerHTML=WEEK.map(w=>
-    `<li><span class="day">${w[0]}</span><span>${w[1]}<br/><span class="muted">${w[2]}</span></span></li>`).join('');
-}
 function renderFocus(){
-  const n=state.videos.length;
-  let f;
-  if(n===0)f=["Log your last 3 videos in Analyze to learn your patterns.","Post 1 transformation video this week.","Fix your profile (Profile tab checklist)."];
-  else{
-    const avgEng=state.videos.reduce((a,v)=>a+(v.diag||diagnose(v)).eng,0)/n;
-    f=[];
-    if(avgEng<0.04)f.push("Your engagement is low — focus on stronger hooks + a payoff/ending in every video.");
-    else f.push("Engagement is solid — now push reach: trending sounds + best posting times.");
-    f.push("Double down on whatever video got your best reach — make a Part 2.");
-    f.push("Post every day this week, even imperfect ones. Volume builds the algorithm's trust.");
-  }
+  const n=state.videos.length;let f;const sr=L()==='sr';
+  if(n===0)f=sr?['Unesi poslednja 3 videa u Analizu da naučiš svoje obrasce.','Postavi 1 transformacioni video ove nedelje.','Sredi profil (čeklista u tabu Profil).']
+    :['Log your last 3 videos in Analyze.','Post 1 transformation video this week.','Fix your profile (Profile tab).'];
+  else{const avg=state.videos.reduce((a,v)=>a+(v.diag||diagnose(v)).eng,0)/n;f=[];
+    if(avg<0.04)f.push(sr?'Engagement ti je nizak — fokus na jače hookove + poentu/kraj u svakom videu.':'Engagement is low — focus on stronger hooks + a payoff in every video.');
+    else f.push(sr?'Engagement je solidan — sad guraj doseg: trending zvukovi + najbolja vremena.':'Engagement is solid — push reach: trending sounds + best times.');
+    f.push(sr?'Udvostruči video sa najboljim dosegom — napravi 2. deo.':'Double down on your best-reach video — make a Part 2.');
+    f.push(sr?'Postavljaj svaki dan ove nedelje, čak i nesavršeno. Količina gradi poverenje algoritma.':'Post every day this week, even imperfect. Volume builds trust.');}
   document.getElementById('weekFocus').innerHTML=f.map((x,i)=>`<li><span class="n">${i+1}</span><span>${x}</span></li>`).join('');
 }
 
-/* ---------------- 30-DAY PLAN ---------------- */
-const PLAN=[
-  "Week 1 — Set up: optimize profile, pic, bio, username. Pick your 5 content pillars.",
-  "Week 1 — Film a 'batch' of 7 videos in one session so you never run out.",
-  "Week 1 — Post 1/day. Study which hook style holds attention.",
-  "Week 1 — Follow David Laid + 5 Balkan gym creators. Save 10 video formats to copy.",
-  "Week 2 — Post 1–2/day. Add a trending sound to every video.",
-  "Week 2 — Analyze every post here. Find your best format.",
-  "Week 2 — Start posting 2–4 stories/day (BTS, polls, check-ins).",
-  "Week 2 — Reply to EVERY comment within the first hour.",
-  "Week 3 — Make a series/Part 2 from your best video.",
-  "Week 3 — Test posting times; lock in your 2 best slots.",
-  "Week 3 — Do 1 trend per day with your own spin.",
-  "Week 3 — Collab/duet with a local creator or friend.",
-  "Week 4 — Double down only on formats that worked. Drop what didn't.",
-  "Week 4 — Post your strongest transformation video yet.",
-  "Week 4 — Review your 30-day stats here, set next month's goal (e.g. +1000 followers)."
-];
-function renderPlan(){
-  const el=document.getElementById('planChecks');
-  el.innerHTML=PLAN.map((p,i)=>{
-    const done=!!state.plan['p'+i];
-    return `<label class="check ${done?'done':''}"><input type="checkbox" ${done?'checked':''} onchange="togglePlan('p${i}',this)"><span>${p}</span></label>`;
-  }).join('');
+/* ================= BEST TIME TO POST ================= */
+function renderBTDefaults(){document.getElementById('btDefList').innerHTML=tr(TIMES).map(t=>`<li><span class="day">${t[0]}</span><span>${t[1]}</span></li>`).join('')}
+function rankBy(arr,key,names){
+  const m={};arr.forEach(v=>{const k=v[key];if(!k)return;if(!m[k])m[k]={sum:0,n:0};m[k].sum+=v.views;m[k].n++;});
+  const out=Object.keys(m).map(k=>({k,label:names[k]||k,avg:m[k].sum/m[k].n,n:m[k].n}));
+  out.sort((a,b)=>b.avg-a.avg);return out;
 }
+function barList(rank){
+  if(!rank.length)return '<p class="muted">–</p>';const max=rank[0].avg||1;const sr=L()==='sr';
+  return rank.map(r=>`<div style="font-size:13px;display:flex;justify-content:space-between;margin-top:8px"><span>${esc(r.label)}</span><span class="muted">${fmt(Math.round(r.avg))} ${sr?'pregleda':'views'} · ${r.n}×</span></div><div class="meter"><i style="width:${Math.round(r.avg/max*100)}%;background:var(--accent)"></i></div>`).join('');
+}
+function renderBestTime(){
+  renderBTDefaults();
+  const sr=L()==='sr';
+  const withDay=state.videos.filter(v=>v.day);
+  const withBuck=state.videos.filter(v=>v.bucket);
+  const res=document.getElementById('btResult');
+  if(withDay.length<3 && withBuck.length<3){
+    res.innerHTML='<p class="muted">'+(sr
+      ?`Imaš ${withDay.length} videa sa upisanim danom i ${withBuck.length} sa vremenom. Dodaj bar 3–5 (u tabu Analiza upiši „Dan objave" i „Vreme objave") pa ću ti reći tvoje najbolje termine. Do tada koristi opšte preporuke ispod.`
+      :`You have ${withDay.length} videos with a day and ${withBuck.length} with a time. Add at least 3–5 and I'll find your best slots. Use the defaults below meanwhile.`)+'</p>';
+    return;
+  }
+  const dayRank=rankBy(withDay,'day',DAYNAMES[L()]);
+  const buckRank=rankBy(withBuck,'bucket',BUCKETNAMES[L()]);
+  let html='';
+  if(dayRank.length){html+=`<h3>${sr?'Tvoj najbolji dan':'Your best day'}</h3>`+barList(dayRank);}
+  if(buckRank.length){html+=`<h3>${sr?'Tvoj najbolji deo dana':'Your best time of day'}</h3>`+barList(buckRank);}
+  if(dayRank.length&&buckRank.length){
+    html+=`<div class="diag" style="margin-top:14px"><b>${sr?'Preporuka:':'Recommendation:'}</b> ${sr?'objavljuj uglavnom':'post mostly on'} <b>${esc(dayRank[0].label)}</b> ${sr?'u terminu':'during'} <b>${esc(buckRank[0].label)}</b> — to ti je do sad davalo najviše pregleda.</div>`;
+  }
+  res.innerHTML=html;
+}
+
+/* ================= FOLLOWER TRACKER ================= */
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addFollower(){
+  const c=num('flCount');let d=document.getElementById('flDate').value||today();
+  if(c<=0){toast(L()==='sr'?'Unesi broj pratilaca':'Enter a follower count');return}
+  state.followers=state.followers.filter(e=>e.d!==d);
+  state.followers.push({d,c});
+  state.followers.sort((a,b)=>a.d<b.d?-1:1);
+  save();document.getElementById('flCount').value='';renderFollowers();
+  toast(L()==='sr'?'Sačuvano':'Saved');
+}
+function delFollower(d){state.followers=state.followers.filter(e=>e.d!==d);save();renderFollowers()}
+function sparkline(f){
+  const sr=L()==='sr';
+  if(f.length<2)return '<p class="muted">'+(sr?'Dodaj bar 2 unosa da vidiš grafikon rasta.':'Add at least 2 entries to see the growth chart.')+'</p>';
+  const W=320,H=96,pad=8;
+  const cs=f.map(e=>e.c),min=Math.min(...cs),max=Math.max(...cs),rng=(max-min)||1;
+  const pts=f.map((e,i)=>[pad+(W-2*pad)*(f.length>1?i/(f.length-1):0),H-pad-(H-2*pad)*(e.c-min)/rng]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=line+` L${(W-pad).toFixed(1)} ${H-pad} L${pad.toFixed(1)} ${H-pad} Z`;
+  const dots=pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="#ff2d55"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
+    <path d="${area}" fill="rgba(255,45,85,.13)"/><path d="${line}" fill="none" stroke="#ff2d55" stroke-width="2.2"/>${dots}</svg>`;
+}
+function renderFollowers(){
+  const f=state.followers||[];const sr=L()==='sr';
+  const stats=document.getElementById('flStats');
+  if(!document.getElementById('flDate').value)document.getElementById('flDate').value=today();
+  if(!f.length){
+    stats.innerHTML='<div class="empty">'+(sr?'Još nema unosa. Upiši svoj trenutni broj pratilaca gore.':'No entries yet. Add your current follower count above.')+'</div>';
+    document.getElementById('flChart').innerHTML='';document.getElementById('flList').innerHTML='';return;
+  }
+  const cur=f[f.length-1],first=f[0];
+  const total=cur.c-first.c;
+  const days=Math.max(1,(new Date(cur.d)-new Date(first.d))/86400000);
+  const perDay=total/days;
+  const proj=Math.round(cur.c+perDay*30);
+  stats.innerHTML=`<div class="card"><div class="grid2">
+     <div class="stat"><b>${fmt(cur.c)}</b><small>${sr?'trenutno':'now'}</small></div>
+     <div class="stat"><b style="color:${total>=0?'var(--good)':'var(--bad)'}">${total>=0?'+':''}${fmt(total)}</b><small>${sr?'ukupno':'total'}</small></div>
+     <div class="stat"><b>${perDay>=0?'+':''}${perDay.toFixed(1)}</b><small>${sr?'dnevno (prosek)':'per day (avg)'}</small></div>
+     <div class="stat"><b>${fmt(proj)}</b><small>${sr?'za 30 dana (procena)':'in 30 days (est.)'}</small></div>
+   </div></div>`;
+  document.getElementById('flChart').innerHTML='<div class="card">'+sparkline(f)+'</div>';
+  document.getElementById('flList').innerHTML='<div class="card">'+f.slice().reverse().map((e,i)=>{
+    const idx=f.length-1-i,prev=f[idx-1],delta=prev?e.c-prev.c:null;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">
+      <span class="muted">${e.d}</span>
+      <span><b>${fmt(e.c)}</b>${delta!==null?` <span style="color:${delta>=0?'var(--good)':'var(--bad)'};font-size:12px">(${delta>=0?'+':''}${delta})</span>`:''} <a onclick="delFollower('${e.d}')" style="margin-left:10px">✕</a></span></div>`;
+  }).join('')+'</div>';
+}
+
+/* ================= SELECTS / TEXT ================= */
+function fillSelect(id,opts,keep){const el=document.getElementById(id);const cur=keep?el.value:'';el.innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('');if(cur)el.value=cur;}
+function applyText(){
+  const lang=L();
+  document.getElementById('hdrSub').textContent=T.hdrSub[lang];
+  document.getElementById('homeNiche').textContent=T.niche[lang];
+  // home greeting
+  document.querySelector('#home h2').innerHTML=`${T.homeHi[lang]} <span id="homeName">${esc(state.name||(lang==='sr'?'šampione':'athlete'))}</span> 💪`;
+  document.querySelector('#home .muted').innerHTML=(lang==='sr'?'Niša: ':'Niche: ')+`<b id="homeNiche" style="color:var(--txt)">${T.niche[lang]}</b><br/>${T.nicheLine[lang]}`;
+  set('lblVids',T.lblVids);set('lblEng',T.lblEng);set('lblFocus',T.lblFocus);set('lblWins',T.lblWins);set('lblPriv',T.lblPriv);
+  set('anH',T.anH);html('anIntro',T.anIntro);set('anL1',T.anL1);set('anLSave',T.anLSave);set('anLWatch',T.anLWatch);set('anLLen',T.anLLen);set('anBtn',T.anBtn);
+  set('capH',T.capH);set('capIntro',T.capIntro);set('capL',T.capL);set('capBtn',T.capBtn);
+  set('libH',T.libH);set('idH',T.idH);set('idIntro',T.idIntro);set('idBtn',T.idBtn);set('idPillH',T.idPillH);set('idPillIntro',T.idPillIntro);set('idHookH',T.idHookH);html('idHookIntro',T.idHookIntro);
+  set('tgH',T.tgH);html('tgIntro',T.tgIntro);set('copyTags',T.copyTags);set('tgLocH',T.tgLocH);set('tgLocIntro',T.tgLocIntro);
+  set('scH',T.scH);set('scF1',T.scF1);html('scF1b',T.scF1b);set('scF2',T.scF2);set('scF2b',T.scF2b);set('scF2c',T.scF2c);set('scF3',T.scF3);html('scF3b',T.scF3b);set('scF4',T.scF4);
+  set('trH',T.trH);html('trIntro',T.trIntro);set('trFindH',T.trFindH);
+  set('prH',T.prH);set('prC1',T.prC1);set('prC1b',T.prC1b);set('prC2',T.prC2);set('prC3',T.prC3);set('prName',T.prName);set('prSave',T.prSave);set('prC4',T.prC4);set('prC4b',T.prC4b);set('prExp',T.prExp);set('prImp',T.prImp);set('prReset',T.prReset);
+  set('plH',T.plH);set('plIntro',T.plIntro);set('hpH',T.hpH);
+  set('anLDay',T.anLDay);set('anLTime',T.anLTime);
+  set('btH',T.btH);set('btIntro',T.btIntro);set('btDefH',T.btDefH);
+  set('flH',T.flH);set('flIntro',T.flIntro);set('flLc',T.flLc);set('flLd',T.flLd);set('flBtn',T.flBtn);
+  document.documentElement.lang=lang;
+}
+function set(id,o){const e=document.getElementById(id);if(e)e.textContent=o[L()]}
+function html(id,o){const e=document.getElementById(id);if(e)e.innerHTML=o[L()]}
+
+/* ================= LANG ================= */
+function setLang(l){state.lang=l;save();renderAll();}
+function syncLangBtns(){document.getElementById('lgSR').classList.toggle('on',L()==='sr');document.getElementById('lgEN').classList.toggle('on',L()==='en');}
+
+/* ================= PROFILE / TOGGLES ================= */
+function saveProfile(){state.name=val('setName');save();updateHome();toast(T.saved[L()])}
 function togglePlan(k,el){state.plan[k]=el.checked;save();el.closest('.check').classList.toggle('done',el.checked)}
 function toggleCheck(k,el){state.checks[k]=el.checked;save();el.closest('.check').classList.toggle('done',el.checked)}
 
-/* ---------------- HOME ---------------- */
+/* ================= HOME ================= */
 function updateHome(){
-  document.getElementById('homeName').textContent=state.name||'athlete';
+  const nameEl=document.getElementById('homeName');if(nameEl)nameEl.textContent=state.name||(L()==='sr'?'šampione':'athlete');
   document.getElementById('kVids').textContent=state.videos.length;
-  if(state.videos.length){
-    const avg=state.videos.reduce((a,v)=>a+(v.diag||diagnose(v)).eng,0)/state.videos.length;
-    document.getElementById('kEng').textContent=pct(avg);
-  } else document.getElementById('kEng').textContent='–';
+  document.getElementById('kEng').textContent=state.videos.length?pct(state.videos.reduce((a,v)=>a+(v.diag||diagnose(v)).eng,0)/state.videos.length):'–';
   document.getElementById('setName').value=state.name||'';
   renderFocus();
 }
 
-/* ---------------- DATA ---------------- */
-function exportData(){
-  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='gym-tiktok-coach-backup.json';a.click();toast('Exported')
-}
-function importData(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);save();initAll();toast('Imported')}catch(x){toast('Bad file')}};
-  r.readAsText(f)
-}
-function resetAll(){if(confirm('Erase all your data on this phone?')){state=fresh();save();initAll();toast('Reset')}}
+/* ================= DATA ================= */
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gym-tiktok-coach-backup.json';a.click();toast(L()==='sr'?'Izvezeno':'Exported')}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=Object.assign(fresh(),JSON.parse(r.result));save();renderAll();toast(L()==='sr'?'Uvezeno':'Imported')}catch(x){toast(L()==='sr'?'Loš fajl':'Bad file')}};r.readAsText(f)}
+function resetAll(){if(confirm(L()==='sr'?'Obrisati sve podatke na ovom telefonu?':'Erase all data on this phone?')){state=fresh();save();renderAll();toast(L()==='sr'?'Obrisano':'Reset')}}
 
-/* ---------------- UTILS ---------------- */
+/* ================= UTILS ================= */
 function val(id){return document.getElementById(id).value.trim()}
 function num(id){return parseInt(document.getElementById(id).value)||0}
 function pct(x){return (x*100).toFixed(1)+'%'}
 function fmt(n){return n>=1000?(n/1000).toFixed(n>=10000?0:1)+'k':n}
 function esc(s){return (s+'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function sample(arr,n){return [...arr].sort(()=>Math.random()-0.5).slice(0,n)}
+function sample(a,n){return [...a].sort(()=>Math.random()-0.5).slice(0,n)}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
 function dedupe(a){return [...new Set(a)]}
 function copy(t){
-  navigator.clipboard?.writeText(t).then(()=>toast('Copied!')).catch(()=>toast('Copied!'));
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>toast(T.copied[L()])).catch(()=>fallbackCopy(t));}
+  else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');
+  ta.style.position='fixed';ta.style.top='0';ta.style.left='0';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{ta.setSelectionRange(0,t.length);document.execCommand('copy');toast(T.copied[L()]);}
+  catch(e){toast(L()==='sr'?'Drži prst da kopiraš':'Long-press to copy');}
+  document.body.removeChild(ta);
 }
 
-/* ---------------- INIT ---------------- */
-function initAll(){
-  buildNav();updateHome();renderHooks();buildTags();renderTrends();
-  renderProf();renderBios();renderWeek();renderLib();renderPlan();rollIdea();
+/* ================= INIT ================= */
+function renderAll(){
+  syncLangBtns();applyText();buildNav();
+  fillSelect('aWatch',SELOPTS.watch[L()]);fillSelect('aLen',SELOPTS.len[L()],true);
+  fillSelect('capType',SELOPTS.type[L()],true);fillSelect('tagType',SELOPTS.type[L()],true);
+  fillSelect('aDay',SELOPTS.day[L()],true);fillSelect('aBucket',SELOPTS.bucket[L()],true);
+  // default aLen to mid
+  document.getElementById('aLen').value='mid';
+  updateHome();renderQuick();renderHooks();renderPillars();renderTrends();renderTimes();renderStories();
+  renderWeek();renderProf();renderBios();renderPlan();renderLib();renderIOS();buildTags();rollIdea();
+  renderBestTime();renderFollowers();
 }
-initAll();
+renderAll();
 go('home');
 </script>
 </body>
