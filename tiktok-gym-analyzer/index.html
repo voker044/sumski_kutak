@@ -160,6 +160,10 @@
       </div>
       <label id="anLLen">Dužina videa</label>
       <select id="aLen"></select>
+      <div class="row">
+        <div><label id="anLDay">Dan objave (za „najbolje vreme")</label><select id="aDay"></select></div>
+        <div><label id="anLTime">Vreme objave</label><select id="aBucket"></select></div>
+      </div>
       <button class="btn" onclick="analyze()" id="anBtn">Dijagnostikuj ovaj video →</button>
     </div>
     <div id="aResult"></div>
@@ -298,6 +302,35 @@
     </div>
   </section>
 
+  <!-- ============ BEST TIME ============ -->
+  <section id="besttime">
+    <h2 id="btH">Najbolje vreme za objavu</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0" id="btIntro"></p>
+      <div id="btResult"></div>
+    </div>
+    <div class="card tight">
+      <h3 style="margin-top:0" id="btDefH"></h3>
+      <ul class="clean" id="btDefList"></ul>
+    </div>
+  </section>
+
+  <!-- ============ FOLLOWERS ============ -->
+  <section id="followers">
+    <h2 id="flH">Praćenje pratilaca</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0" id="flIntro"></p>
+      <div class="row">
+        <div><label id="flLc">Broj pratilaca</label><input id="flCount" type="number" inputmode="numeric" placeholder="1240"/></div>
+        <div><label id="flLd">Datum</label><input id="flDate" type="date"/></div>
+      </div>
+      <button class="btn" onclick="addFollower()" id="flBtn">Dodaj unos</button>
+    </div>
+    <div id="flStats"></div>
+    <div id="flChart"></div>
+    <div id="flList"></div>
+  </section>
+
   <!-- ============ iOS HELP ============ -->
   <section id="help">
     <h2 id="hpH">Kako instalirati na iPhone</h2>
@@ -315,7 +348,7 @@
 const KEY='gymTikTokCoach_v2';
 let state=load();
 function load(){try{return Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)))}catch(e){return fresh()}}
-function fresh(){return {name:'', lang:'sr', videos:[], checks:{}, plan:{}}}
+function fresh(){return {name:'', lang:'sr', videos:[], checks:{}, plan:{}, followers:[]}}
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
 function L(){return state.lang||'sr'}
@@ -387,11 +420,22 @@ const T={
   plH:{sr:'Plan za 30 dana',en:'30-day plan'},
   plIntro:{sr:'Prati ovo i za mesec dana imaš pravu, rastuću stranicu. Štikliraj stavke:',en:'Follow this and in a month you\'ll have a real, growing page. Check items off:'},
   hpH:{sr:'Kako instalirati na iPhone',en:'Install on iPhone'},
+  anLDay:{sr:'Dan objave (za „najbolje vreme")',en:'Day posted (for "best time")'},
+  anLTime:{sr:'Vreme objave',en:'Time posted'},
+  btH:{sr:'Najbolje vreme za objavu',en:'Best time to post'},
+  btIntro:{sr:'Računa se iz tvojih videa — koji dan i deo dana ti donosi najviše pregleda. Upiši „Dan objave" i „Vreme objave" u tabu Analiza za svaki video.',en:'Calculated from your videos — which day and time of day gets you the most views. Add "Day posted" and "Time posted" in the Analyze tab.'},
+  btDefH:{sr:'Dok skupljaš podatke — opšte preporuke (Srbija)',en:'Until you have data — defaults (Serbia)'},
+  flH:{sr:'Praćenje pratilaca',en:'Follower tracker'},
+  flIntro:{sr:'Upiši broj pratilaca s vremena na vreme (npr. svaki dan ili svake nedelje). App crta rast i predviđa kuda ideš.',en:'Log your follower count now and then (daily or weekly). The app charts your growth and projects where you\'re heading.'},
+  flLc:{sr:'Broj pratilaca',en:'Follower count'},
+  flLd:{sr:'Datum',en:'Date'},
+  flBtn:{sr:'Dodaj unos',en:'Add entry'},
   copied:{sr:'Kopirano! ✅',en:'Copied! ✅'},
   saved:{sr:'Sačuvano',en:'Saved'},
   deleted:{sr:'Obrisano',en:'Deleted'},
   enterViews:{sr:'Prvo unesi preglede',en:'Enter the views first'},
   nav:{home:{sr:'Početna',en:'Home'},analyze:{sr:'Analiza',en:'Analyze'},caption:{sr:'Opis',en:'Caption'},
+    besttime:{sr:'Vreme',en:'Best time'},followers:{sr:'Pratioci',en:'Followers'},
     library:{sr:'Videi',en:'Videos'},ideas:{sr:'Ideje',en:'Ideas'},tags:{sr:'Tagovi',en:'Tags'},
     schedule:{sr:'Plan',en:'Plan'},trends:{sr:'Trendovi',en:'Trends'},profile:{sr:'Profil',en:'Profile'},
     plan:{sr:'30 dana',en:'30-Day'},help:{sr:'iPhone',en:'iPhone'}}
@@ -640,8 +684,16 @@ const SELOPTS={
   len:{sr:[['short','Ispod 15s'],['mid','15–35s'],['long','35s+']],
        en:[['short','Under 15s'],['mid','15–35s'],['long','35s+']]},
   type:{sr:[['transformation','Transformacija / napredak'],['aesthetic','Estetika / poziranje'],['motivation','Motivacija / mindset'],['howto','Saveti / kako da'],['relatable','Relatable / smešno']],
-        en:[['transformation','Transformation / progress'],['aesthetic','Aesthetics / posing'],['motivation','Motivation / mindset'],['howto','How-to / tips'],['relatable','Relatable / funny']]}
+        en:[['transformation','Transformation / progress'],['aesthetic','Aesthetics / posing'],['motivation','Motivation / mindset'],['howto','How-to / tips'],['relatable','Relatable / funny']]},
+  day:{sr:[['','— '],['mon','Ponedeljak'],['tue','Utorak'],['wed','Sreda'],['thu','Četvrtak'],['fri','Petak'],['sat','Subota'],['sun','Nedelja']],
+       en:[['','— '],['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday'],['sat','Saturday'],['sun','Sunday']]},
+  bucket:{sr:[['','— '],['morning','Jutro (6–10h)'],['midday','Podne (11–14h)'],['afternoon','Popodne (15–18h)'],['evening','Veče (19–22h)'],['night','Noć (23–5h)']],
+          en:[['','— '],['morning','Morning (6–10)'],['midday','Midday (11–14)'],['afternoon','Afternoon (15–18)'],['evening','Evening (19–22)'],['night','Night (23–5)']]}
 };
+const DAYNAMES={sr:{mon:'Ponedeljak',tue:'Utorak',wed:'Sreda',thu:'Četvrtak',fri:'Petak',sat:'Subota',sun:'Nedelja'},
+  en:{mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'}};
+const BUCKETNAMES={sr:{morning:'Jutro (6–10h)',midday:'Podne (11–14h)',afternoon:'Popodne (15–18h)',evening:'Veče (19–22h)',night:'Noć (23–5h)'},
+  en:{morning:'Morning (6–10)',midday:'Midday (11–14)',afternoon:'Afternoon (15–18)',evening:'Evening (19–22)',night:'Night (23–5)'}};
 
 /* ================= HASHTAGS ================= */
 const TAGS={
@@ -728,8 +780,8 @@ function genCaption(){
 }
 
 /* ================= NAV ================= */
-const TAB_ORDER=['home','analyze','caption','library','ideas','tags','schedule','trends','profile','plan','help'];
-const TAB_ICON={home:'🏠',analyze:'🔬',caption:'✍️',library:'📁',ideas:'💡',tags:'#️⃣',schedule:'📅',trends:'🔥',profile:'👤',plan:'🚀',help:'📱'};
+const TAB_ORDER=['home','analyze','caption','besttime','followers','library','ideas','tags','schedule','trends','profile','plan','help'];
+const TAB_ICON={home:'🏠',analyze:'🔬',caption:'✍️',besttime:'⏰',followers:'📈',library:'📁',ideas:'💡',tags:'#️⃣',schedule:'📅',trends:'🔥',profile:'👤',plan:'🚀',help:'📱'};
 function buildNav(){
   document.getElementById('nav').innerHTML=TAB_ORDER.map(id=>
     `<button data-tab="${id}" onclick="go('${id}')"><span class="ic">${TAB_ICON[id]}</span>${T.nav[id][L()]}</button>`).join('');
@@ -742,12 +794,15 @@ function go(id){
   window.scrollTo(0,0);
   if(id==='library')renderLib();
   if(id==='plan')renderPlan();
+  if(id==='besttime')renderBestTime();
+  if(id==='followers')renderFollowers();
 }
 
 /* ================= ANALYSIS ENGINE ================= */
 function analyze(){
   const v={title:val('aTitle')||'Untitled',views:num('aViews'),likes:num('aLikes'),comments:num('aComments'),
-    shares:num('aShares'),saves:num('aSaves'),watch:val('aWatch'),len:val('aLen'),ts:Date.now()};
+    shares:num('aShares'),saves:num('aSaves'),watch:val('aWatch'),len:val('aLen'),
+    day:val('aDay'),bucket:val('aBucket'),ts:Date.now()};
   if(v.views<=0){toast(T.enterViews[L()]);return}
   v.diag=diagnose(v);
   state.videos.unshift(v);save();updateHome();
@@ -901,6 +956,92 @@ function renderFocus(){
   document.getElementById('weekFocus').innerHTML=f.map((x,i)=>`<li><span class="n">${i+1}</span><span>${x}</span></li>`).join('');
 }
 
+/* ================= BEST TIME TO POST ================= */
+function renderBTDefaults(){document.getElementById('btDefList').innerHTML=tr(TIMES).map(t=>`<li><span class="day">${t[0]}</span><span>${t[1]}</span></li>`).join('')}
+function rankBy(arr,key,names){
+  const m={};arr.forEach(v=>{const k=v[key];if(!k)return;if(!m[k])m[k]={sum:0,n:0};m[k].sum+=v.views;m[k].n++;});
+  const out=Object.keys(m).map(k=>({k,label:names[k]||k,avg:m[k].sum/m[k].n,n:m[k].n}));
+  out.sort((a,b)=>b.avg-a.avg);return out;
+}
+function barList(rank){
+  if(!rank.length)return '<p class="muted">–</p>';const max=rank[0].avg||1;const sr=L()==='sr';
+  return rank.map(r=>`<div style="font-size:13px;display:flex;justify-content:space-between;margin-top:8px"><span>${esc(r.label)}</span><span class="muted">${fmt(Math.round(r.avg))} ${sr?'pregleda':'views'} · ${r.n}×</span></div><div class="meter"><i style="width:${Math.round(r.avg/max*100)}%;background:var(--accent)"></i></div>`).join('');
+}
+function renderBestTime(){
+  renderBTDefaults();
+  const sr=L()==='sr';
+  const withDay=state.videos.filter(v=>v.day);
+  const withBuck=state.videos.filter(v=>v.bucket);
+  const res=document.getElementById('btResult');
+  if(withDay.length<3 && withBuck.length<3){
+    res.innerHTML='<p class="muted">'+(sr
+      ?`Imaš ${withDay.length} videa sa upisanim danom i ${withBuck.length} sa vremenom. Dodaj bar 3–5 (u tabu Analiza upiši „Dan objave" i „Vreme objave") pa ću ti reći tvoje najbolje termine. Do tada koristi opšte preporuke ispod.`
+      :`You have ${withDay.length} videos with a day and ${withBuck.length} with a time. Add at least 3–5 and I'll find your best slots. Use the defaults below meanwhile.`)+'</p>';
+    return;
+  }
+  const dayRank=rankBy(withDay,'day',DAYNAMES[L()]);
+  const buckRank=rankBy(withBuck,'bucket',BUCKETNAMES[L()]);
+  let html='';
+  if(dayRank.length){html+=`<h3>${sr?'Tvoj najbolji dan':'Your best day'}</h3>`+barList(dayRank);}
+  if(buckRank.length){html+=`<h3>${sr?'Tvoj najbolji deo dana':'Your best time of day'}</h3>`+barList(buckRank);}
+  if(dayRank.length&&buckRank.length){
+    html+=`<div class="diag" style="margin-top:14px"><b>${sr?'Preporuka:':'Recommendation:'}</b> ${sr?'objavljuj uglavnom':'post mostly on'} <b>${esc(dayRank[0].label)}</b> ${sr?'u terminu':'during'} <b>${esc(buckRank[0].label)}</b> — to ti je do sad davalo najviše pregleda.</div>`;
+  }
+  res.innerHTML=html;
+}
+
+/* ================= FOLLOWER TRACKER ================= */
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addFollower(){
+  const c=num('flCount');let d=document.getElementById('flDate').value||today();
+  if(c<=0){toast(L()==='sr'?'Unesi broj pratilaca':'Enter a follower count');return}
+  state.followers=state.followers.filter(e=>e.d!==d);
+  state.followers.push({d,c});
+  state.followers.sort((a,b)=>a.d<b.d?-1:1);
+  save();document.getElementById('flCount').value='';renderFollowers();
+  toast(L()==='sr'?'Sačuvano':'Saved');
+}
+function delFollower(d){state.followers=state.followers.filter(e=>e.d!==d);save();renderFollowers()}
+function sparkline(f){
+  const sr=L()==='sr';
+  if(f.length<2)return '<p class="muted">'+(sr?'Dodaj bar 2 unosa da vidiš grafikon rasta.':'Add at least 2 entries to see the growth chart.')+'</p>';
+  const W=320,H=96,pad=8;
+  const cs=f.map(e=>e.c),min=Math.min(...cs),max=Math.max(...cs),rng=(max-min)||1;
+  const pts=f.map((e,i)=>[pad+(W-2*pad)*(f.length>1?i/(f.length-1):0),H-pad-(H-2*pad)*(e.c-min)/rng]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=line+` L${(W-pad).toFixed(1)} ${H-pad} L${pad.toFixed(1)} ${H-pad} Z`;
+  const dots=pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="#ff2d55"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
+    <path d="${area}" fill="rgba(255,45,85,.13)"/><path d="${line}" fill="none" stroke="#ff2d55" stroke-width="2.2"/>${dots}</svg>`;
+}
+function renderFollowers(){
+  const f=state.followers||[];const sr=L()==='sr';
+  const stats=document.getElementById('flStats');
+  if(!document.getElementById('flDate').value)document.getElementById('flDate').value=today();
+  if(!f.length){
+    stats.innerHTML='<div class="empty">'+(sr?'Još nema unosa. Upiši svoj trenutni broj pratilaca gore.':'No entries yet. Add your current follower count above.')+'</div>';
+    document.getElementById('flChart').innerHTML='';document.getElementById('flList').innerHTML='';return;
+  }
+  const cur=f[f.length-1],first=f[0];
+  const total=cur.c-first.c;
+  const days=Math.max(1,(new Date(cur.d)-new Date(first.d))/86400000);
+  const perDay=total/days;
+  const proj=Math.round(cur.c+perDay*30);
+  stats.innerHTML=`<div class="card"><div class="grid2">
+     <div class="stat"><b>${fmt(cur.c)}</b><small>${sr?'trenutno':'now'}</small></div>
+     <div class="stat"><b style="color:${total>=0?'var(--good)':'var(--bad)'}">${total>=0?'+':''}${fmt(total)}</b><small>${sr?'ukupno':'total'}</small></div>
+     <div class="stat"><b>${perDay>=0?'+':''}${perDay.toFixed(1)}</b><small>${sr?'dnevno (prosek)':'per day (avg)'}</small></div>
+     <div class="stat"><b>${fmt(proj)}</b><small>${sr?'za 30 dana (procena)':'in 30 days (est.)'}</small></div>
+   </div></div>`;
+  document.getElementById('flChart').innerHTML='<div class="card">'+sparkline(f)+'</div>';
+  document.getElementById('flList').innerHTML='<div class="card">'+f.slice().reverse().map((e,i)=>{
+    const idx=f.length-1-i,prev=f[idx-1],delta=prev?e.c-prev.c:null;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">
+      <span class="muted">${e.d}</span>
+      <span><b>${fmt(e.c)}</b>${delta!==null?` <span style="color:${delta>=0?'var(--good)':'var(--bad)'};font-size:12px">(${delta>=0?'+':''}${delta})</span>`:''} <a onclick="delFollower('${e.d}')" style="margin-left:10px">✕</a></span></div>`;
+  }).join('')+'</div>';
+}
+
 /* ================= SELECTS / TEXT ================= */
 function fillSelect(id,opts,keep){const el=document.getElementById(id);const cur=keep?el.value:'';el.innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('');if(cur)el.value=cur;}
 function applyText(){
@@ -919,6 +1060,9 @@ function applyText(){
   set('trH',T.trH);html('trIntro',T.trIntro);set('trFindH',T.trFindH);
   set('prH',T.prH);set('prC1',T.prC1);set('prC1b',T.prC1b);set('prC2',T.prC2);set('prC3',T.prC3);set('prName',T.prName);set('prSave',T.prSave);set('prC4',T.prC4);set('prC4b',T.prC4b);set('prExp',T.prExp);set('prImp',T.prImp);set('prReset',T.prReset);
   set('plH',T.plH);set('plIntro',T.plIntro);set('hpH',T.hpH);
+  set('anLDay',T.anLDay);set('anLTime',T.anLTime);
+  set('btH',T.btH);set('btIntro',T.btIntro);set('btDefH',T.btDefH);
+  set('flH',T.flH);set('flIntro',T.flIntro);set('flLc',T.flLc);set('flLd',T.flLd);set('flBtn',T.flBtn);
   document.documentElement.lang=lang;
 }
 function set(id,o){const e=document.getElementById(id);if(e)e.textContent=o[L()]}
@@ -974,10 +1118,12 @@ function renderAll(){
   syncLangBtns();applyText();buildNav();
   fillSelect('aWatch',SELOPTS.watch[L()]);fillSelect('aLen',SELOPTS.len[L()],true);
   fillSelect('capType',SELOPTS.type[L()],true);fillSelect('tagType',SELOPTS.type[L()],true);
+  fillSelect('aDay',SELOPTS.day[L()],true);fillSelect('aBucket',SELOPTS.bucket[L()],true);
   // default aLen to mid
   document.getElementById('aLen').value='mid';
   updateHome();renderQuick();renderHooks();renderPillars();renderTrends();renderTimes();renderStories();
   renderWeek();renderProf();renderBios();renderPlan();renderLib();renderIOS();buildTags();rollIdea();
+  renderBestTime();renderFollowers();
 }
 renderAll();
 go('home');
