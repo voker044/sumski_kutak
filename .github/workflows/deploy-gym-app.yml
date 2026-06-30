@@ -2,7 +2,7 @@ name: Deploy Gym TikTok Coach to Pages
 
 on:
   push:
-    branches: [claude/tiktok-gym-profile-analyzer-g6n2kn]
+    branches: [master]
     paths:
       - 'tiktok-gym-analyzer/**'
       - '.github/workflows/deploy-gym-app.yml'
