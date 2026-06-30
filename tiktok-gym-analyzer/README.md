@@ -4,14 +4,27 @@ Your private, personal TikTok growth assistant — built for a gym / aesthetics 
 
 It is **one single file** (`index.html`). No login, no internet needed, no one else can see your data. Everything you type is saved **only on your phone**.
 
-## How to open it on your phone
+All generated content (hooks, captions, ideas, hashtags, bios) is in **Serbian by default** — for your Serbian audience. There's an **SR / EN** toggle in the top-right if you ever want English.
 
-**Easiest way (recommended):**
-1. Email `index.html` to yourself, or send it to yourself on Telegram/WhatsApp.
-2. Open it on your phone and tap "Open in browser".
-3. In the browser menu tap **"Add to Home Screen"** — now it looks and opens like a real app.
+## How to install it on your iPhone (Safari)
 
-**From your computer:** just double-click `index.html` and it opens in any browser.
+1. Open `index.html` in **Safari** (email it to yourself or send it on Telegram/WhatsApp first, then open it).
+2. Tap the **Share** button (the square with an arrow at the bottom).
+3. Scroll and tap **"Add to Home Screen"** → **Add**.
+4. It now opens like a real app, works offline, and remembers your data.
+
+There's also a **📱 iPhone** tab inside the app with these same steps.
+
+**From a computer:** just double-click `index.html`.
+
+## Caption generator (Serbian, one tap)
+
+The **✍️ Opis (Caption)** tab builds a complete, ready-to-post package in one tap:
+- **Hook** — the line you put as text over the video (first second).
+- **Caption** — the description + a call-to-action question to spark comments.
+- **Hashtags** — a smart Serbia/Balkan-focused set for that video type.
+
+Tap **📋 Copy whole caption**, open TikTok, long-press the caption field and Paste. (On iPhone the copy button uses a built-in fallback so it works even when the app runs offline.)
 
 ## What it does
 
