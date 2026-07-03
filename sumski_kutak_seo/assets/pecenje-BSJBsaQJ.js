@@ -1,1 +1,1 @@
-const e="/assets/pecenje-BHHZfWYS.jpg";export{e as p};
+const e="/assets/pecenje-bhhzfwys.webp";export{e as p};
