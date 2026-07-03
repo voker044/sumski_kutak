@@ -1,32 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://sumski-kutak.com/</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/hero-grill-ds_jpqph.webp</image:loc>
+      <image:title>Roštilj na otvorenom ognjištu — Šumski Kutak Vrčin</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/ambijent-b41yitez.webp</image:loc>
+      <image:title>Ambijent restorana Šumski Kutak</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/daska-ctaxh4pu.webp</image:loc>
+      <image:title>Domaća predjela — pršuta, kajmak, sirevi i ajvar</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://sumski-kutak.com/meni/</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/cevapi-cz1fjh0q.webp</image:loc>
+      <image:title>Ćevapi — Šumski Kutak meni</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/corba-ceojhj8l.webp</image:loc>
+      <image:title>Domaća čorba — Šumski Kutak meni</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/baklava-c1qxg0bb.webp</image:loc>
+      <image:title>Baklava — deserti Šumski Kutak</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://sumski-kutak.com/galerija/</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/basta-cgodcnlx.webp</image:loc>
+      <image:title>Bašta restorana Šumski Kutak</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/event-1-m_n6q-1w.webp</image:loc>
+      <image:title>Organizacija proslave — Šumski Kutak Events</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/event-rodjendan-1-zygbiw8q.webp</image:loc>
+      <image:title>Dečji rođendan — Šumski Kutak Events</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://sumski-kutak.com/o-nama/</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://sumski-kutak.com/assets/ambijent-b41yitez.webp</image:loc>
+      <image:title>Ambijent — Šumski Kutak, nekadašnji Restoran Seka</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://sumski-kutak.com/kontakt/</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
