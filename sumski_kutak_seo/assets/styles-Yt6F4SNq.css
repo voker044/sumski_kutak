@@ -38,3 +38,26 @@ nav a[class*="tracking-"]::before,footer a::before{content:"";position:absolute;
 .sk-faq-item[open] summary{color:var(--primary)}
 .sk-faq-item[open] summary::after{transform:rotate(45deg)}
 .sk-faq-item p{padding:0 0 1.3rem;color:color-mix(in oklab,var(--foreground) 82%,transparent);max-width:65ch}
+
+/* ===== statičke interakcije ===== */
+.sk-reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+.sk-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.sk-reveal{opacity:1;transform:none;transition:none}}
+#sk-mm{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;background:color-mix(in oklab,var(--background) 96%,transparent);backdrop-filter:blur(18px);animation:sk-fade .3s ease both}
+#sk-mm nav{display:flex;flex-direction:column;align-items:center;gap:1.6rem}
+#sk-mm nav a{font-family:var(--font-display);font-size:2rem;letter-spacing:.04em;color:var(--foreground);animation:sk-rise .5s cubic-bezier(.22,.61,.36,1) both}
+#sk-mm nav a.active{color:var(--primary);font-style:italic}
+#sk-mm-x{position:absolute;top:1.2rem;right:1.4rem;width:44px;height:44px;font-size:1.3rem;color:var(--primary);border:1px solid color-mix(in oklab,var(--primary) 40%,transparent);border-radius:2px;background:none;cursor:pointer}
+.sk-mm-cta{display:flex;flex-direction:column;align-items:center;gap:.8rem}
+.sk-mm-cta a{border:1px solid var(--primary);color:var(--primary);padding:.8rem 2rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.25em;border-radius:2px;animation:sk-rise .5s cubic-bezier(.22,.61,.36,1) both}
+.sk-mm-cta p{font-size:.8rem;color:color-mix(in oklab,var(--foreground) 60%,transparent);animation:sk-rise .5s both}
+@keyframes sk-fade{from{opacity:0}to{opacity:1}}
+@keyframes sk-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#sk-lb{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;background:color-mix(in oklab,var(--background) 95%,transparent);backdrop-filter:blur(12px);animation:sk-fade .25s ease both;cursor:zoom-out}
+#sk-lb figure{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:min(92vw,42rem);animation:sk-zoom .3s cubic-bezier(.22,.61,.36,1) both;cursor:default}
+#sk-lb img{max-height:78vh;max-width:100%;border-radius:2px;border:1px solid var(--border)}
+#sk-lb figcaption{font-family:var(--font-display);font-size:1.15rem;color:var(--primary);text-align:center}
+#sk-lb-x{position:absolute;top:1.2rem;right:1.4rem;width:44px;height:44px;font-size:1.3rem;color:var(--primary);border:1px solid color-mix(in oklab,var(--primary) 40%,transparent);border-radius:2px;background:none;cursor:pointer}
+@keyframes sk-zoom{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.sk-pair{margin-top:.4rem;font-size:11px;font-style:italic;color:color-mix(in oklab,var(--accent,#c9a96e) 85%,transparent)}
+.sk-pair .sk-pair-l{font-style:normal;text-transform:uppercase;letter-spacing:.2em;color:var(--muted-foreground)}

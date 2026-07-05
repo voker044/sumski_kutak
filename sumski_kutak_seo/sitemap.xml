@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://sumski-kutak.com/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,7 +21,7 @@
   </url>
   <url>
     <loc>https://sumski-kutak.com/meni/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -39,7 +39,7 @@
   </url>
   <url>
     <loc>https://sumski-kutak.com/galerija/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
@@ -57,7 +57,7 @@
   </url>
   <url>
     <loc>https://sumski-kutak.com/o-nama/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
     <image:image>
@@ -67,7 +67,7 @@
   </url>
   <url>
     <loc>https://sumski-kutak.com/kontakt/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
