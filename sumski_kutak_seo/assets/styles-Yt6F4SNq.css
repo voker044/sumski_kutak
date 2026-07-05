@@ -24,3 +24,17 @@ nav a[class*="tracking-"]:hover::after,nav a[class*="tracking-"][aria-current="p
 /* touch targets */
 nav a[class*="tracking-"],footer a{position:relative}
 nav a[class*="tracking-"]::before,footer a::before{content:"";position:absolute;inset:-6px -10px;}
+
+/* ===== FAQ (Česta pitanja) ===== */
+#sk-faq{border-top:1px solid var(--border);background:color-mix(in oklab,var(--card) 30%,transparent);padding:5rem 1.5rem}
+.sk-faq-wrap{max-width:48rem;margin:0 auto}
+.sk-faq-eyebrow{text-transform:uppercase;letter-spacing:.4em;font-size:.75rem;color:var(--primary);text-align:center}
+.sk-faq-title{font-family:var(--font-display);font-weight:400;font-size:2rem;line-height:1.15;text-align:center;margin:1rem auto 2.5rem;max-width:36rem}
+@media (min-width:768px){.sk-faq-title{font-size:2.75rem}}
+.sk-faq-item{border-bottom:1px solid var(--border)}
+.sk-faq-item summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.15rem 0;font-weight:600;font-size:1.02rem;transition:color .3s}
+.sk-faq-item summary::-webkit-details-marker{display:none}
+.sk-faq-item summary::after{content:"+";font-family:var(--font-display);font-size:1.6rem;line-height:1;color:var(--primary);transition:transform .35s cubic-bezier(.22,.61,.36,1);flex:none}
+.sk-faq-item[open] summary{color:var(--primary)}
+.sk-faq-item[open] summary::after{transform:rotate(45deg)}
+.sk-faq-item p{padding:0 0 1.3rem;color:color-mix(in oklab,var(--foreground) 82%,transparent);max-width:65ch}
